@@ -17,8 +17,6 @@ export class GameEngine {
   private moveHistory: Move[];
   private moveCount: number;
 
-  // TODO: ADD REPLAY FUNCTIONALITY
-
   constructor() {
     this.board = new Board();
     this.display = new GameDisplay();
@@ -40,29 +38,28 @@ export class GameEngine {
   private initializePlayers(): void {
     console.log(chalk.cyan('\n=== Player Setup ==='));
 
-    // Get White player name
-    const whiteName = readlineSync.question(
-      chalk.white('Enter name for White player: ')
-    ).trim();
+    const whiteName = readlineSync
+      .question(chalk.white('Enter name for White player: '), {
+        defaultInput: 'White Player',
+      })
+      .trim();
 
-    // Get Black player name
-    const blackName = readlineSync.question(
-      chalk.yellow('Enter name for Black player: ')
-    ).trim();
+    const blackName = readlineSync
+      .question(chalk.yellow('Enter name for Black player: '), {
+        defaultInput: 'Black Player',
+      })
+      .trim();
 
-    // Create players with names or default names if empty
-    this.whitePlayer = new Player(
-      PieceColor.WHITE,
-      whiteName || 'White Player'
-    );
-    this.blackPlayer = new Player(
-      PieceColor.BLACK,
-      blackName || 'Black Player'
-    );
+    this.whitePlayer = new Player(PieceColor.WHITE, whiteName);
+    this.blackPlayer = new Player(PieceColor.BLACK, blackName);
 
     this.currentPlayer = this.whitePlayer;
 
-    console.log(chalk.green(`\nGame starting! ${this.whitePlayer.getDisplayName()} vs ${this.blackPlayer.getDisplayName()}`));
+    console.log(
+      chalk.green(
+        `\nGame starting! ${this.whitePlayer.getDisplayName()} vs ${this.blackPlayer.getDisplayName()}`,
+      ),
+    );
     readlineSync.question(chalk.gray('\nPress Enter to begin...'));
   }
 
@@ -70,7 +67,10 @@ export class GameEngine {
     while (this.gameStatus === GameStatus.PLAYING) {
       try {
         this.display.showBoard(this.board);
-        this.display.showGameInfo(this.currentPlayer);
+        this.display.showGameInfo(
+          this.currentPlayer,
+          this.board.getCapturedPieces(),
+        );
 
         const input = this.getPlayerInput();
         if (this.isGameCommand(input)) {
@@ -92,7 +92,9 @@ export class GameEngine {
   }
 
   private getPlayerInput(): string {
-    const prompt = chalk.green(`${this.currentPlayer.getDisplayName()}, enter your move: `);
+    const prompt = chalk.green(
+      `${this.currentPlayer.getDisplayName()}, enter your move: `,
+    );
     return readlineSync.question(prompt).trim();
   }
 

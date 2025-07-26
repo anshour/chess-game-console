@@ -1,9 +1,9 @@
-import Table from 'cli-table3';
-import chalk from 'chalk';
 import { GameStatus, PieceColor, Move } from '../utils/enums.js';
-import { Board } from './board.js';
 import { Position } from './position.js';
 import { Player } from './player.js';
+import { Board } from './board.js';
+import Table from 'cli-table3';
+import chalk from 'chalk';
 
 export class GameDisplay {
   showWelcome(): void {
@@ -155,10 +155,29 @@ export class GameDisplay {
     );
   }
 
-  showGameInfo(currentPlayer: Player): void {
-    console.log(chalk.blue(`\nCurrent Player: ${currentPlayer.getDisplayName()}\n`));
+  showGameInfo(currentPlayer: Player, capturedPieces: { white: string[], black: string[] }): void {
+    console.log(
+      chalk.blue(`\nCurrent Player: ${currentPlayer.getDisplayName()}`),
+    );
 
-    // TODO: Display game status, move history, and captured pieces
+
+    if (capturedPieces.white.length > 0 || capturedPieces.black.length > 0) {
+      console.log(chalk.magenta('\nCaptured Pieces:'));
+
+      if (capturedPieces.black.length > 0) {
+        console.log(
+          chalk.white(`  White captured: ${capturedPieces.black.join(' ')}`),
+        );
+      }
+
+      if (capturedPieces.white.length > 0) {
+        console.log(
+          chalk.yellow(`  Black captured: ${capturedPieces.white.join(' ')}`),
+        );
+      }
+    }
+
+    console.log(''); // Add spacing
   }
 
   showError(message: string): void {

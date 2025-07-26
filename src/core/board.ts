@@ -10,6 +10,7 @@ import { Position } from './position.js';
 
 export class Board {
   private board: (Piece | null)[][] = [];
+  private capturedPieces: { white: Piece[], black: Piece[] } = { white: [], black: [] };
 
   constructor() {
     this.initializeBoard();
@@ -81,6 +82,15 @@ export class Board {
     }
 
     const piece = this.getPieceAt(from);
+    const capturedPiece = this.getPieceAt(to);
+
+    if (capturedPiece) {
+      if (capturedPiece.color === PieceColor.WHITE) {
+        this.capturedPieces.white.push(capturedPiece);
+      } else {
+        this.capturedPieces.black.push(capturedPiece);
+      }
+    }
 
     this.board[from.rankIndex][from.fileIndex] = null;
 
@@ -89,5 +99,12 @@ export class Board {
     this.board[to.rankIndex][to.fileIndex] = piece;
 
     return true;
+  }
+
+  getCapturedPieces(): { white: string[], black: string[] } {
+    return {
+      white: this.capturedPieces.white.map(piece => piece.type),
+      black: this.capturedPieces.black.map(piece => piece.type)
+    };
   }
 }
