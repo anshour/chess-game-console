@@ -11,11 +11,6 @@ function main(): void {
   }
 }
 
-process.on('SIGINT', () => {
-  console.log(chalk.yellow('\n\nGame interrupted. Goodbye!'));
-  process.exit(0);
-});
-
 process.on('uncaughtException', (error) => {
   console.error(chalk.red('Uncaught exception:'), error);
   process.exit(1);
