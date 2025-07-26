@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 import { Board } from './board.js';
-import { GameStatus, PieceColor, Move } from '../utils/enums.js';
+import { GameStatus, PieceColor, PieceType, Move } from '../utils/enums.js';
 import readlineSync from 'readline-sync';
 import { GameDisplay } from './game-display.js';
 import { Position } from './position.js';
@@ -20,7 +20,6 @@ export class GameEngine {
   constructor() {
     this.board = new Board();
     this.display = new GameDisplay();
-    // Players will be initialized in start() method after getting names
     this.whitePlayer = new Player(PieceColor.WHITE, 'White');
     this.blackPlayer = new Player(PieceColor.BLACK, 'Black');
     this.currentPlayer = this.whitePlayer;
@@ -114,7 +113,19 @@ export class GameEngine {
       throw new Error("Invalid turn! It's not your piece.");
     }
 
+    const isPromotion = piece && this.board.isPromotionMove(piece, to);
+
     this.board.movePiece(from, to);
+
+    if (isPromotion) {
+      const promotionType = this.promptForPromotion();
+      this.board.promotePawn(to, promotionType);
+      console.log(
+        chalk.green(
+          `\n🎊 ${this.currentPlayer.getDisplayName()}'s pawn has been promoted to ${promotionType}! 🎊`,
+        ),
+      );
+    }
 
     this.recordMove(from, to);
 
@@ -189,6 +200,36 @@ export class GameEngine {
     const move: Move = { from, to };
     this.moveHistory.push(move);
     this.moveCount++;
+  }
+
+  private promptForPromotion(): PieceType {
+    console.log(chalk.cyan('\n🎉 Pawn Promotion! 🎉'));
+    console.log(chalk.yellow('Your pawn has reached the end of the board!'));
+    console.log(chalk.white('Choose which piece you want to promote to:'));
+
+    const choices = [
+      `${PieceType.QUEEN} - Queen (Most powerful piece)`,
+      `${PieceType.ROOK} - Rook (Castle, moves horizontally/vertically)`,
+      `${PieceType.BISHOP} - Bishop (Moves diagonally)`,
+      `${PieceType.KNIGHT} - Knight (L-shaped moves)`,
+    ];
+
+    const selectedIndex = readlineSync.keyInSelect(
+      choices,
+      chalk.green('Select your promotion piece:'),
+      { cancel: false },
+    );
+
+    const promotionTypes = [
+      PieceType.QUEEN,
+      PieceType.ROOK,
+      PieceType.BISHOP,
+      PieceType.KNIGHT,
+    ];
+    const selectedType = promotionTypes[selectedIndex];
+
+    console.log(chalk.green(`\n✨ Promoting pawn to ${selectedType}! ✨`));
+    return selectedType;
   }
 
   private waitForKeyPress(): void {

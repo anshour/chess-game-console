@@ -1,4 +1,4 @@
-import { PieceColor } from '../utils/enums.js';
+import { PieceColor, PieceType } from '../utils/enums.js';
 import { Bishop } from './pieces/bishop.js';
 import { King } from './pieces/king.js';
 import { Knight } from './pieces/knight.js';
@@ -102,6 +102,52 @@ export class Board {
     this.board[to.rankIndex][to.fileIndex] = piece;
 
     return true;
+  }
+
+  isPromotionMove(piece: Piece, to: Position): boolean {
+    if (piece.type !== PieceType.PAWN) {
+      return false;
+    }
+
+    if (piece.color === PieceColor.WHITE && to.rankIndex === 7) {
+      return true;
+    }
+
+    if (piece.color === PieceColor.BLACK && to.rankIndex === 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  promotePawn(position: Position, promotionType: PieceType): void {
+    const piece = this.getPieceAt(position);
+
+    if (!piece || piece.type !== PieceType.PAWN) {
+      throw new Error('No pawn at the specified position to promote');
+    }
+
+    this.board[position.rankIndex][position.fileIndex] = null;
+
+    let newPiece: Piece;
+    switch (promotionType) {
+      case PieceType.QUEEN:
+        newPiece = new Queen(piece.color, position);
+        break;
+      case PieceType.ROOK:
+        newPiece = new Rook(piece.color, position);
+        break;
+      case PieceType.BISHOP:
+        newPiece = new Bishop(piece.color, position);
+        break;
+      case PieceType.KNIGHT:
+        newPiece = new Knight(piece.color, position);
+        break;
+      default:
+        throw new Error(`Invalid promotion type: ${promotionType}`);
+    }
+
+    this.board[position.rankIndex][position.fileIndex] = newPiece;
   }
 
   getCapturedPieces(): { white: string[]; black: string[] } {
