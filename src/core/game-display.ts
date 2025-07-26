@@ -1,8 +1,9 @@
 import Table from 'cli-table3';
 import chalk from 'chalk';
-import { GameStatus, PieceColor } from '../utils/enums.js';
+import { GameStatus, PieceColor, Move } from '../utils/enums.js';
 import { Board } from './board.js';
 import { Position } from './position.js';
+import { Player } from './player.js';
 
 export class GameDisplay {
   showWelcome(): void {
@@ -154,8 +155,8 @@ export class GameDisplay {
     );
   }
 
-  showGameInfo(currentPlayer: PieceColor): void {
-    console.log(chalk.blue(`\nCurrent Player: ${currentPlayer}`));
+  showGameInfo(currentPlayer: Player): void {
+    console.log(chalk.blue(`\nCurrent Player: ${currentPlayer.getDisplayName()}\n`));
 
     // TODO: Display game status, move history, and captured pieces
   }
@@ -186,11 +187,64 @@ export class GameDisplay {
     );
   }
 
-  showSuccessMove(color: PieceColor, from: Position, to: Position): void {
+  showSuccessMove(player: Player, from: Position, to: Position): void {
     console.log(
       chalk.green(
-        `${color === PieceColor.WHITE ? 'White' : 'Black'} moved from ${from.toAlgebraic()} to ${to.toAlgebraic()}`,
+        `${player.name} moved from ${from.toAlgebraic()} to ${to.toAlgebraic()}`,
       ),
     );
+  }
+
+  showMoveHistory(moveHistory: Move[]): void {
+    console.clear();
+
+    const title = chalk.yellow.bold('╔══════════════════════╗');
+    const titleText = chalk.yellow.bold('║    MOVE HISTORY      ║');
+    const titleBottom = chalk.yellow.bold('╚══════════════════════╝');
+
+    console.log(`\n${title}`);
+    console.log(titleText);
+    console.log(titleBottom);
+
+    if (moveHistory.length === 0) {
+      console.log(chalk.gray('\nNo moves have been made yet.'));
+      return;
+    }
+
+    console.log(chalk.green.bold('\n📝 Game Moves:\n'));
+
+    // Create a table for move history
+    const table = new Table({
+      head: ['Move', 'White', 'Black'],
+      style: {
+        head: ['cyan'],
+        border: ['white'],
+        compact: false,
+      },
+      colWidths: [6, 15, 15],
+    });
+
+    // Process moves in pairs (white and black)
+    for (let i = 0; i < moveHistory.length; i += 2) {
+      const moveNumber = Math.floor(i / 2) + 1;
+      const whiteMove = moveHistory[i];
+      const blackMove = moveHistory[i + 1];
+
+      const whiteNotation = whiteMove
+        ? `${whiteMove.from.toAlgebraic()},${whiteMove.to.toAlgebraic()}`
+        : '';
+      const blackNotation = blackMove
+        ? `${blackMove.from.toAlgebraic()},${blackMove.to.toAlgebraic()}`
+        : '';
+
+      table.push([
+        chalk.cyan.bold(moveNumber.toString()),
+        chalk.white(whiteNotation),
+        chalk.yellow(blackNotation),
+      ]);
+    }
+
+    console.log(table.toString());
+    console.log(chalk.gray(`\nTotal moves: ${moveHistory.length}`));
   }
 }

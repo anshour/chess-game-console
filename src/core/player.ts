@@ -1,10 +1,23 @@
-// TODO: Implement the Player class with properties and methods as needed
-// export class Player {
-//   public color: Color;
-//   public name: string;
+import { PieceColor } from '../utils/enums.js';
 
-//   constructor(color: Color, name: string) {
-//     this.color = color;
-//     this.name = name;
-//   }
-// }
+export class Player {
+  public readonly color: PieceColor;
+  public readonly name: string;
+
+  constructor(color: PieceColor, name: string) {
+    this.color = color;
+    this.name = name.trim();
+
+    if (!this.name) {
+      throw new Error('Player name cannot be empty');
+    }
+  }
+
+  public toString(): string {
+    return this.name;
+  }
+
+  public getDisplayName(): string {
+    return `${this.name} (${this.color === PieceColor.WHITE ? 'White' : 'Black'})`;
+  }
+}

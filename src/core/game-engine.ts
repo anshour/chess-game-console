@@ -1,33 +1,69 @@
 import chalk from 'chalk';
 import { Board } from './board.js';
-import { GameStatus, PieceColor } from '../utils/enums.js';
+import { GameStatus, PieceColor, Move } from '../utils/enums.js';
 import readlineSync from 'readline-sync';
 import { GameDisplay } from './game-display.js';
 import { Position } from './position.js';
 import { Piece } from './pieces/piece.js';
+import { Player } from './player.js';
 
 export class GameEngine {
   private board: Board;
   private display: GameDisplay;
-  // TODO: ADD PLAYER NAME
-  private currentPlayer: PieceColor;
+  private whitePlayer: Player;
+  private blackPlayer: Player;
+  private currentPlayer: Player;
   private gameStatus: GameStatus;
-
-  // TODO: ADD MOVE HISTORY
-  // private moveHistory: Move[];
+  private moveHistory: Move[];
+  private moveCount: number;
 
   // TODO: ADD REPLAY FUNCTIONALITY
 
   constructor() {
     this.board = new Board();
     this.display = new GameDisplay();
-    this.currentPlayer = PieceColor.WHITE;
+    // Players will be initialized in start() method after getting names
+    this.whitePlayer = new Player(PieceColor.WHITE, 'White');
+    this.blackPlayer = new Player(PieceColor.BLACK, 'Black');
+    this.currentPlayer = this.whitePlayer;
     this.gameStatus = GameStatus.PLAYING;
+    this.moveHistory = [];
+    this.moveCount = 0;
   }
 
   public start(): void {
     this.display.showWelcome();
+    this.initializePlayers();
     this.gameLoop();
+  }
+
+  private initializePlayers(): void {
+    console.log(chalk.cyan('\n=== Player Setup ==='));
+
+    // Get White player name
+    const whiteName = readlineSync.question(
+      chalk.white('Enter name for White player: ')
+    ).trim();
+
+    // Get Black player name
+    const blackName = readlineSync.question(
+      chalk.yellow('Enter name for Black player: ')
+    ).trim();
+
+    // Create players with names or default names if empty
+    this.whitePlayer = new Player(
+      PieceColor.WHITE,
+      whiteName || 'White Player'
+    );
+    this.blackPlayer = new Player(
+      PieceColor.BLACK,
+      blackName || 'Black Player'
+    );
+
+    this.currentPlayer = this.whitePlayer;
+
+    console.log(chalk.green(`\nGame starting! ${this.whitePlayer.getDisplayName()} vs ${this.blackPlayer.getDisplayName()}`));
+    readlineSync.question(chalk.gray('\nPress Enter to begin...'));
   }
 
   private gameLoop(): void {
@@ -56,7 +92,7 @@ export class GameEngine {
   }
 
   private getPlayerInput(): string {
-    const prompt = chalk.green(`${this.currentPlayer}, enter your move: `);
+    const prompt = chalk.green(`${this.currentPlayer.getDisplayName()}, enter your move: `);
     return readlineSync.question(prompt).trim();
   }
 
@@ -78,11 +114,13 @@ export class GameEngine {
 
     this.board.movePiece(from, to);
 
+    this.recordMove(from, to);
+
     this.display.showSuccessMove(this.currentPlayer, from, to);
   }
 
   private isValidTurn(piece: Piece): boolean {
-    return piece.color === this.currentPlayer;
+    return piece.color === this.currentPlayer.color;
   }
 
   private parseCoordinates(input: string): [Position, Position] {
@@ -124,7 +162,7 @@ export class GameEngine {
         return true;
 
       case 'history':
-        // TODO: Implement move history display
+        this.display.showMoveHistory(this.moveHistory);
         this.waitForKeyPress();
         return true;
 
@@ -140,9 +178,15 @@ export class GameEngine {
 
   private switchPlayer(): void {
     this.currentPlayer =
-      this.currentPlayer === PieceColor.WHITE
-        ? PieceColor.BLACK
-        : PieceColor.WHITE;
+      this.currentPlayer.color === PieceColor.WHITE
+        ? this.blackPlayer
+        : this.whitePlayer;
+  }
+
+  private recordMove(from: Position, to: Position): void {
+    const move: Move = { from, to };
+    this.moveHistory.push(move);
+    this.moveCount++;
   }
 
   private waitForKeyPress(): void {
