@@ -10,7 +10,10 @@ import { Position } from './position.js';
 
 export class Board {
   private board: (Piece | null)[][] = [];
-  private capturedPieces: { white: Piece[], black: Piece[] } = { white: [], black: [] };
+  private capturedPieces: { white: Piece[]; black: Piece[] } = {
+    white: [],
+    black: [],
+  };
 
   constructor() {
     this.initializeBoard();
@@ -101,10 +104,10 @@ export class Board {
     return true;
   }
 
-  getCapturedPieces(): { white: string[], black: string[] } {
+  getCapturedPieces(): { white: string[]; black: string[] } {
     return {
-      white: this.capturedPieces.white.map(piece => piece.type),
-      black: this.capturedPieces.black.map(piece => piece.type)
+      white: this.capturedPieces.white.map((piece) => piece.type),
+      black: this.capturedPieces.black.map((piece) => piece.type),
     };
   }
 }

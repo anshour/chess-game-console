@@ -21,32 +21,4 @@ export class Knight extends Piece {
 
     return this.isEmpty(to, board) || this.isEnemyPiece(to, board);
   }
-
-  getPossibleMoves(board: Board): Position[] {
-    const moves: Position[] = [];
-    const knightMoves = [
-      [-2, -1],
-      [-2, 1],
-      [-1, -2],
-      [-1, 2],
-      [1, -2],
-      [1, 2],
-      [2, -1],
-      [2, 1],
-    ];
-
-    for (const [rankOffset, fileOffset] of knightMoves) {
-      const newRank = this.position.rankIndex + rankOffset;
-      const newFile = this.position.fileIndex + fileOffset;
-
-      if (newRank >= 0 && newRank <= 7 && newFile >= 0 && newFile <= 7) {
-        const newPos = new Position(newRank, newFile);
-        if (this.isEmpty(newPos, board) || this.isEnemyPiece(newPos, board)) {
-          moves.push(newPos);
-        }
-      }
-    }
-
-    return moves;
-  }
 }

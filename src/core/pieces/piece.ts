@@ -10,7 +10,6 @@ export abstract class Piece {
   ) {}
 
   abstract isValidMove(to: Position, board: Board): boolean;
-  abstract getPossibleMoves(board: Board): Position[];
 
   protected isPathClear(from: Position, to: Position, board: Board): boolean {
     const rankDiff = to.rankIndex - from.rankIndex;
