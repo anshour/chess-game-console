@@ -65,15 +65,20 @@ export class Board {
     return this.board[position.rankIndex][position.fileIndex];
   }
 
-  movePiece(from: Position, to: Position): boolean {
+  isValidMove(from: Position, to: Position): boolean {
     const piece = this.getPieceAt(from);
     if (!piece) {
-      throw new Error('No piece at source position');
-    }
-
-    if (!piece.isValidMove(to, this)) {
       return false;
     }
+    return piece.isValidMove(to, this);
+  }
+
+  movePiece(from: Position, to: Position): boolean {
+    if (!this.isValidMove(from, to)) {
+      return false;
+    }
+
+    const piece = this.getPieceAt(from);
 
     this.board[from.rankIndex][from.fileIndex] = null;
 

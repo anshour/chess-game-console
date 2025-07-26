@@ -4,9 +4,11 @@ import { GameStatus, PieceColor } from '../utils/enums.js';
 import readlineSync from 'readline-sync';
 import { GameDisplay } from './game-display.js';
 import { Position } from './position.js';
+import { Piece } from './pieces/piece.js';
 
 export class GameEngine {
   private board: Board;
+  private display: GameDisplay;
   // TODO: ADD PLAYER NAME
   private currentPlayer: PieceColor;
   private gameStatus: GameStatus;
@@ -18,20 +20,21 @@ export class GameEngine {
 
   constructor() {
     this.board = new Board();
+    this.display = new GameDisplay();
     this.currentPlayer = PieceColor.WHITE;
     this.gameStatus = GameStatus.PLAYING;
   }
 
   public start(): void {
-    GameDisplay.displayWelcome();
+    this.display.showWelcome();
     this.gameLoop();
   }
 
   private gameLoop(): void {
     while (this.gameStatus === GameStatus.PLAYING) {
       try {
-        GameDisplay.displayBoard(this.board);
-        GameDisplay.displayGameInfo(this.currentPlayer);
+        this.display.showBoard(this.board);
+        this.display.showGameInfo(this.currentPlayer);
 
         const input = this.getPlayerInput();
         if (this.isGameCommand(input)) {
@@ -40,19 +43,19 @@ export class GameEngine {
           }
           continue;
         }
-        const valid = this.processMove(input);
-        if (!valid) {
+        if (!this.processMove(input)) {
           continue;
         }
+
         this.switchPlayer();
       } catch (error) {
-        GameDisplay.displayError(
+        this.display.showError(
           error instanceof Error ? error.message : 'Unknown error occurred',
         );
         this.waitForKeyPress();
       }
     }
-    GameDisplay.displayGameEnd(this.gameStatus);
+    this.display.showGameEnd(this.gameStatus);
   }
 
   private getPlayerInput(): string {
@@ -61,39 +64,67 @@ export class GameEngine {
   }
 
   private isGameCommand(input: string): boolean {
-    const commands = ['quit', 'exit', 'help', 'history', 'status'];
+    const commands = ['quit', 'help', 'history', 'status'];
     return commands.includes(input.toLowerCase());
   }
 
   private processMove(input: string): boolean {
-    const coordinates = input.split(' ');
-    if (coordinates.length !== 2) {
-      console.log(
-        chalk.red(
-          'Invalid move! Please enter moves in format: from to (e.g., "e2,e4" or "1,4 3,4")',
-        ),
-      );
+    const coordinates = this.parseCoordinates(input);
+
+    if (!coordinates) {
+      this.display.showInvalidCoordinate();
       this.waitForKeyPress();
       return false;
     }
+
+    const [from, to] = coordinates;
+
+    const piece = this.board.getPieceAt(from);
+
+    if (!piece) {
+      this.display.showPieceNotFound();
+      this.waitForKeyPress();
+      return false;
+    }
+
+    if (!this.isValidTurn(piece)) {
+      this.display.showInvalidTurn();
+      this.waitForKeyPress();
+      return false;
+    }
+
+    const success = this.board.movePiece(from, to);
+
+    if (!success) {
+      this.display.showInvalidMove();
+      this.waitForKeyPress();
+      return false;
+    }
+
+    this.display.showSuccessMove(this.currentPlayer, from, to);
+
+    return success;
+  }
+
+  private isValidTurn(piece: Piece): boolean {
+    return piece.color === this.currentPlayer;
+  }
+
+  private parseCoordinates(input: string): [Position, Position] | null {
+    const coordinates = input.includes(' ')
+      ? input.split(' ')
+      : input.split(',');
+
+    if (coordinates.length !== 2) return null;
+
     const from = Position.parse(coordinates[0]);
     const to = Position.parse(coordinates[1]);
 
-    const valid = this.board.movePiece(from, to);
-
-    if (!valid) {
-      console.log(chalk.red('Invalid move! Please try again.'));
-      this.waitForKeyPress();
-      return false;
+    if (!from || !to) {
+      return null;
     }
 
-    console.log(
-      chalk.green(
-        `${this.currentPlayer} moved from ${from.toAlgebraic()} to ${to.toAlgebraic()}`,
-      ),
-    );
-
-    return valid;
+    return [from, to];
   }
 
   private handleGameCommand(input: string): boolean {
@@ -107,14 +138,13 @@ export class GameEngine {
 
         if (confirm) {
           console.log(chalk.yellow('Exiting the game...'));
-          this.gameStatus = GameStatus.STOP;
+          return false; // Exit game loop
         }
-
         return true;
       }
 
       case 'help':
-        GameDisplay.displayHelp();
+        this.display.showHelp();
         this.waitForKeyPress();
         return true;
 

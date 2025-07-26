@@ -5,7 +5,7 @@ import { Board } from './board.js';
 import { Position } from './position.js';
 
 export class GameDisplay {
-  static displayWelcome(): void {
+  showWelcome(): void {
     console.clear();
 
     console.log('🏁 Welcome to Console Chess! 🏁');
@@ -25,21 +25,21 @@ export class GameDisplay {
     console.log(chalk.green('\nGame starting...'));
   }
 
-  static displayBoard(board: Board): void {
+  showBoard(board: Board): void {
     const table = new Table({
-      head: ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+      head: ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', ''],
       style: {
         head: ['cyan'],
         border: ['white'],
         compact: false,
       },
-      colWidths: [3, 4, 4, 4, 4, 4, 4, 4, 4],
+      colWidths: [3, 4, 4, 4, 4, 4, 4, 4, 4, 3],
     });
 
     for (let rank = 7; rank >= 0; rank--) {
       const row: string[] = [chalk.cyan.bold((rank + 1).toString())];
 
-      for (let file = 0; file < 8; file++) {
+      for (let file = 0; file <= 7; file++) {
         const position = new Position(rank, file);
         const piece = board.getPieceAt(position);
 
@@ -58,13 +58,28 @@ export class GameDisplay {
         }
       }
 
+      row.push(chalk.cyan.bold((rank + 1).toString()));
+
       table.push(row);
     }
+
+    table.push([
+      '',
+      chalk.cyan.bold('a'),
+      chalk.cyan.bold('b'),
+      chalk.cyan.bold('c'),
+      chalk.cyan.bold('d'),
+      chalk.cyan.bold('e'),
+      chalk.cyan.bold('f'),
+      chalk.cyan.bold('g'),
+      chalk.cyan.bold('h'),
+      '',
+    ]);
 
     console.log('\n' + table.toString());
   }
 
-  static displayGameEnd(gameStatus: GameStatus): void {
+  showGameEnd(gameStatus: GameStatus): void {
     console.clear();
 
     console.log(chalk.cyan('\n=== GAME OVER ==='));
@@ -86,7 +101,7 @@ export class GameDisplay {
     console.log(chalk.green('\nThank you for playing!'));
   }
 
-  static displayHelp(): void {
+  showHelp(): void {
     const title = chalk.yellow.bold('╔══════════════════════╗');
     const titleText = chalk.yellow.bold('║   CHESS GAME HELP    ║');
     const titleBottom = chalk.yellow.bold('╚══════════════════════╝');
@@ -139,13 +154,43 @@ export class GameDisplay {
     );
   }
 
-  static displayGameInfo(currentPlayer: PieceColor): void {
+  showGameInfo(currentPlayer: PieceColor): void {
     console.log(chalk.blue(`\nCurrent Player: ${currentPlayer}`));
 
     // TODO: Display game status, move history, and captured pieces
   }
 
-  static displayError(message: string): void {
+  showError(message: string): void {
     console.log(chalk.red(`\n❌ Error: ${message}`));
+  }
+
+  showInvalidCoordinate(): void {
+    console.log(
+      chalk.red(
+        '\n❌ Invalid move! Please enter moves in format: from to (e.g., "e2,e4" or "1,4 3,4")',
+      ),
+    );
+  }
+
+  showInvalidMove(): void {
+    console.log(chalk.red('\n❌ Invalid move! Please try again.'));
+  }
+
+  showPieceNotFound(): void {
+    console.log(chalk.red('\n❌ No piece found at the selected position!'));
+  }
+
+  showInvalidTurn(): void {
+    console.log(
+      chalk.red('\n❌ Invalid turn! You can only move your own pieces!'),
+    );
+  }
+
+  showSuccessMove(color: PieceColor, from: Position, to: Position): void {
+    console.log(
+      chalk.green(
+        `${color === PieceColor.WHITE ? 'White' : 'Black'} moved from ${from.toAlgebraic()} to ${to.toAlgebraic()}`,
+      ),
+    );
   }
 }
