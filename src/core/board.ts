@@ -75,7 +75,9 @@ export class Board {
 
   movePiece(from: Position, to: Position): boolean {
     if (!this.isValidMove(from, to)) {
-      return false;
+      throw new Error(
+        'Invalid move! Please check the piece and target position.',
+      );
     }
 
     const piece = this.getPieceAt(from);

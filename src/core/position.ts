@@ -3,28 +3,20 @@ export class Position {
     public readonly rankIndex: number, // 0-7 (1-8 in notation)
     public readonly fileIndex: number, // 0-7 (a-h in notation)
   ) {
-    if (!Position.isValidPosition(this.rankIndex, this.fileIndex)) {
-      throw new Error(
-        'Invalid position: rank and file indices must be between 0-7',
-      );
-    }
+    this.validate(rankIndex, fileIndex);
   }
 
-  // validate(rankIndex: number, fileIndex: number): void {
-  //   if (isNaN(rankIndex) || isNaN(fileIndex)) {
-  //     throw new Error('Rank and file indices must be numbers');
-  //   }
+  validate(rankIndex: number, fileIndex: number): void {
+    if (rankIndex < 0 || rankIndex > 7) {
+      throw new Error('Rank index must be between 0 and 7 or 1-8 in notation');
+    }
+    if (fileIndex < 0 || fileIndex > 7) {
+      throw new Error('File index must be between 0 and 7 or a-h in notation');
+    }
 
-  //   if (rankIndex < 0 || rankIndex > 7) {
-  //     throw new Error('Rank index must be between 0 and 7 or 1-8 in notation');
-  //   }
-  //   if (fileIndex < 0 || fileIndex > 7) {
-  //     throw new Error('File index must be between 0 and 7 or a-h in notation');
-  //   }
-  // }
-
-  static isValidPosition(rank: number, file: number): boolean {
-    return rank >= 0 && rank <= 7 && file >= 0 && file <= 7;
+    if (isNaN(rankIndex) || isNaN(fileIndex)) {
+      throw new Error('Rank and file indices must be valid numbers');
+    }
   }
 
   static isValidAlgebraic(notation: string): boolean {
@@ -35,7 +27,7 @@ export class Position {
 
     if (isNaN(file) || isNaN(rank)) return false;
 
-    return this.isValidPosition(rank, file);
+    return true;
   }
 
   static isValidNumeric(notation: string): boolean {
@@ -46,7 +38,7 @@ export class Position {
 
     if (isNaN(file) || isNaN(rank)) return false;
 
-    return this.isValidPosition(rank, file);
+    return true;
   }
 
   equals(other: Position): boolean {
@@ -78,7 +70,7 @@ export class Position {
     return new Position(rank, file);
   }
 
-  static parse(input: string): Position | null {
+  static parse(input: string): Position {
     const isAlgebraic = this.isValidAlgebraic(input);
     if (isAlgebraic) {
       return this.fromAlgebraic(input);
@@ -90,6 +82,6 @@ export class Position {
       return this.fromNumeric(input);
     }
 
-    return null;
+    throw new Error('Invalid position notation');
   }
 }

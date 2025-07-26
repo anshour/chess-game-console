@@ -43,10 +43,7 @@ export class GameEngine {
           }
           continue;
         }
-        if (!this.processMove(input)) {
-          continue;
-        }
-
+        this.processMove(input);
         this.switchPlayer();
       } catch (error) {
         this.display.showError(
@@ -68,61 +65,39 @@ export class GameEngine {
     return commands.includes(input.toLowerCase());
   }
 
-  private processMove(input: string): boolean {
+  private processMove(input: string): void {
     const coordinates = this.parseCoordinates(input);
-
-    if (!coordinates) {
-      this.display.showInvalidCoordinate();
-      this.waitForKeyPress();
-      return false;
-    }
 
     const [from, to] = coordinates;
 
     const piece = this.board.getPieceAt(from);
 
-    if (!piece) {
-      this.display.showPieceNotFound();
-      this.waitForKeyPress();
-      return false;
+    if (piece && !this.isValidTurn(piece)) {
+      throw new Error("Invalid turn! It's not your piece.");
     }
 
-    if (!this.isValidTurn(piece)) {
-      this.display.showInvalidTurn();
-      this.waitForKeyPress();
-      return false;
-    }
-
-    const success = this.board.movePiece(from, to);
-
-    if (!success) {
-      this.display.showInvalidMove();
-      this.waitForKeyPress();
-      return false;
-    }
+    this.board.movePiece(from, to);
 
     this.display.showSuccessMove(this.currentPlayer, from, to);
-
-    return success;
   }
 
   private isValidTurn(piece: Piece): boolean {
     return piece.color === this.currentPlayer;
   }
 
-  private parseCoordinates(input: string): [Position, Position] | null {
+  private parseCoordinates(input: string): [Position, Position] {
     const coordinates = input.includes(' ')
       ? input.split(' ')
       : input.split(',');
 
-    if (coordinates.length !== 2) return null;
+    if (coordinates.length !== 2) {
+      throw new Error(
+        'Invalid move! Please enter moves in format: from to (e.g., "e2,e4" or "1,4 3,4")',
+      );
+    }
 
     const from = Position.parse(coordinates[0]);
     const to = Position.parse(coordinates[1]);
-
-    if (!from || !to) {
-      return null;
-    }
 
     return [from, to];
   }
