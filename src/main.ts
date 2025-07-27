@@ -1,10 +1,10 @@
+import { CliController } from './cli/cli-controller.js';
 import chalk from 'chalk';
-import { GameEngine } from './core/game-engine.js';
 
 function main(): void {
   try {
-    const game = new GameEngine();
-    game.start();
+    const controller = new CliController();
+    controller.start();
   } catch (error) {
     console.error(chalk.red('Fatal error:'), error);
     process.exit(1);

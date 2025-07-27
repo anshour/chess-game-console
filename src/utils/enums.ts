@@ -12,10 +12,24 @@ export enum PieceType {
   KING = 'K',
 }
 
+export enum MoveStatus {
+  SUCCESS = 'success',
+  INVALID = 'invalid',
+  PROMOTION = 'promotion',
+  KING_CAPTURED = 'king_captured',
+
+  // TODO: IMPLEMENT
+  // STALEMATE = 'stalemate',
+  // CHECK = 'check',
+  // CHECKMATE = 'checkmate',
+}
+
 export enum GameStatus {
   PLAYING = 'playing',
   WHITE_WINS = 'white_wins',
   BLACK_WINS = 'black_wins',
-  DRAW = 'draw',
-  STOP = 'stop',
+
+  // TODO: IMPLEMENT
+  // DRAW = 'draw',
+  // STOP = 'stop',
 }

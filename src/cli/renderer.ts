@@ -1,31 +1,18 @@
 import { GameStatus, PieceColor } from '../utils/enums.js';
-import { Position } from './position.js';
-import { Player } from './player.js';
-import { Board } from './board.js';
-import Table from 'cli-table3';
+import { Position } from '../core/position.js';
+import { Player } from '../core/player.js';
+import { Board } from '../core/board.js';
+import { Move } from '../core/types.js';
+import CliTable3 from 'cli-table3';
 import chalk from 'chalk';
-import { Move } from './types.js';
 
-export class GameDisplay {
-  showWelcome(): void {
+export class Renderer {
+  clear(): void {
     console.clear();
-
-    this.showTitle('Welcome to Console Chess!');
-
-    console.log(chalk.white('How to play:'));
-    console.log(
-      chalk.gray(
-        '• Enter moves in format: from to (e.g., "e2,e4" or "1,4 3,4")',
-      ),
-    );
-    console.log(chalk.gray('• Algebraic format: a1-h8 (e.g., "e2 e4")'));
-    console.log(chalk.gray('• Numeric format: row,col (e.g., "1,4 3,4")'));
-    console.log(chalk.gray('• Type "quit" to end the game'));
-    console.log(chalk.gray('• Type "help" for commands'));
   }
 
   showBoard(board: Board): void {
-    const table = new Table({
+    const table = new CliTable3({
       head: ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', ''],
       style: {
         head: ['cyan'],
@@ -78,6 +65,58 @@ export class GameDisplay {
     console.log('\n' + table.toString());
   }
 
+  showTitle(value: string): void {
+    const minWidth = 24;
+    const padding = 4;
+    const borderWidth = 2;
+    const contentWidth = Math.max(
+      value.length + padding,
+      minWidth - borderWidth,
+    );
+
+    const horizontalBorder = '═'.repeat(contentWidth);
+    const borderTop = chalk.yellow.bold(`╔${horizontalBorder}╗`);
+    const borderBottom = chalk.yellow.bold(`╚${horizontalBorder}╝`);
+
+    const availableSpace = contentWidth - value.length;
+    const leftPadding = Math.floor(availableSpace / 2);
+    const rightPadding = availableSpace - leftPadding;
+    const centeredText =
+      ' '.repeat(leftPadding) + value + ' '.repeat(rightPadding);
+    const titleText = chalk.yellow.bold(`║${centeredText}║`);
+
+    console.log(`\n`);
+    console.log(`${borderTop}`);
+    console.log(titleText);
+    console.log(`${borderBottom}`);
+    console.log(`\n`);
+  }
+
+  showMessage(message: string): void {
+    console.log(chalk.cyan(message));
+  }
+
+  showError(message: string): void {
+    console.log(chalk.red(`\n❌ Error: ${message}`));
+  }
+
+  showWelcome(): void {
+    console.clear();
+
+    this.showTitle('Welcome to Console Chess!');
+
+    console.log(chalk.white('How to play:'));
+    console.log(
+      chalk.gray(
+        '• Enter moves in format: from to (e.g., "e2,e4" or "1,4 3,4")',
+      ),
+    );
+    console.log(chalk.gray('• Algebraic format: a1-h8 (e.g., "e2 e4")'));
+    console.log(chalk.gray('• Numeric format: row,col (e.g., "1,4 3,4")'));
+    console.log(chalk.gray('• Type "quit" to end the game'));
+    console.log(chalk.gray('• Type "help" for commands'));
+  }
+
   showGameEnd(gameStatus: GameStatus): void {
     console.clear();
 
@@ -89,9 +128,6 @@ export class GameDisplay {
         break;
       case GameStatus.BLACK_WINS:
         console.log(chalk.red.bold('🏆 BLACK PLAYER WINS! 🏆'));
-        break;
-      case GameStatus.DRAW:
-        console.log(chalk.yellow.bold('🤝 GAME ENDED IN A DRAW 🤝'));
         break;
     }
 
@@ -151,9 +187,7 @@ export class GameDisplay {
     currentPlayer: Player,
     capturedPieces: { white: string[]; black: string[] },
   ): void {
-    console.log(
-      chalk.blue(`\nCurrent Player: ${currentPlayer.getDisplayName()}`),
-    );
+    console.log(chalk.blue(`\nCurrent Player: ${currentPlayer.name}`));
 
     if (capturedPieces.white.length > 0 || capturedPieces.black.length > 0) {
       console.log(chalk.magenta('\nCaptured Pieces:'));
@@ -171,11 +205,7 @@ export class GameDisplay {
       }
     }
 
-    console.log(''); // Add spacing
-  }
-
-  showError(message: string): void {
-    console.log(chalk.red(`\n❌ Error: ${message}`));
+    console.log('');
   }
 
   showInvalidCoordinate(): void {
@@ -203,34 +233,9 @@ export class GameDisplay {
   showSuccessMove(player: Player, from: Position, to: Position): void {
     console.log(
       chalk.green(
-        `${player.name} moved from ${from.toAlgebraic()} to ${to.toAlgebraic()}`,
+        `\n${player.name} moved from ${from.toAlgebraic()} to ${to.toAlgebraic()}`,
       ),
     );
-  }
-
-  showTitle(value: string): void {
-    const minWidth = 24;
-    const padding = 4;
-    const borderWidth = 2;
-    const contentWidth = Math.max(
-      value.length + padding,
-      minWidth - borderWidth,
-    );
-
-    const horizontalBorder = '═'.repeat(contentWidth);
-    const title = chalk.yellow.bold(`╔${horizontalBorder}╗`);
-    const titleBottom = chalk.yellow.bold(`╚${horizontalBorder}╝`);
-
-    const availableSpace = contentWidth - value.length;
-    const leftPadding = Math.floor(availableSpace / 2);
-    const rightPadding = availableSpace - leftPadding;
-    const centeredText =
-      ' '.repeat(leftPadding) + value + ' '.repeat(rightPadding);
-    const titleText = chalk.yellow.bold(`║${centeredText}║`);
-
-    console.log(`\n${title}`);
-    console.log(titleText);
-    console.log(`${titleBottom}\n`);
   }
 
   showMoveHistory(moveHistory: Move[]): void {
@@ -246,7 +251,7 @@ export class GameDisplay {
     console.log(chalk.green.bold('\n📝 Game Moves:\n'));
 
     // Create a table for move history
-    const table = new Table({
+    const table = new CliTable3({
       head: ['Move', 'White', 'Black'],
       style: {
         head: ['cyan'],
@@ -283,7 +288,7 @@ export class GameDisplay {
   showPawnPromoted(currentPlayer: Player, promotionType: string): void {
     console.log(
       chalk.green(
-        `\n🎊 ${currentPlayer.getDisplayName()}'s pawn has been promoted to ${promotionType}! 🎊`,
+        `\n🎊 ${currentPlayer.name}'s pawn has been promoted to ${promotionType}! 🎊`,
       ),
     );
   }

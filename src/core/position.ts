@@ -77,7 +77,6 @@ export class Position {
     }
 
     const isNumeric = this.isValidNumeric(input);
-
     if (isNumeric) {
       return this.fromNumeric(input);
     }

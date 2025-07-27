@@ -7,6 +7,7 @@ import { Piece } from './pieces/piece.js';
 import { Queen } from './pieces/queen.js';
 import { Rook } from './pieces/rook.js';
 import { Position } from './position.js';
+import { Move } from './types.js';
 
 export class Board {
   private board: (Piece | null)[][] = [];
@@ -70,7 +71,9 @@ export class Board {
     return this.board[position.rankIndex][position.fileIndex];
   }
 
-  isValidMove(from: Position, to: Position): boolean {
+  isValidMove(move: Move): boolean {
+    const { from, to } = move;
+
     const piece = this.getPieceAt(from);
     if (!piece) {
       return false;
@@ -78,8 +81,10 @@ export class Board {
     return piece.isValidMove(to, this);
   }
 
-  movePiece(from: Position, to: Position): boolean {
-    if (!this.isValidMove(from, to)) {
+  movePiece(move: Move): boolean {
+    const { from, to } = move;
+
+    if (!this.isValidMove(move)) {
       throw new Error(
         'Invalid move! Please check the piece and target position.',
       );
@@ -113,16 +118,17 @@ export class Board {
     return this.capturedKing;
   }
 
-  isPromotionMove(piece: Piece, to: Position): boolean {
+  // TODO: MOVE TO PAWN
+  canBePromoted(piece: Piece): boolean {
     if (piece.type !== PieceType.PAWN) {
       return false;
     }
 
-    if (piece.color === PieceColor.WHITE && to.rankIndex === 7) {
+    if (piece.color === PieceColor.WHITE && piece.position.rankIndex === 7) {
       return true;
     }
 
-    if (piece.color === PieceColor.BLACK && to.rankIndex === 0) {
+    if (piece.color === PieceColor.BLACK && piece.position.rankIndex === 0) {
       return true;
     }
 
@@ -134,6 +140,10 @@ export class Board {
 
     if (!piece || piece.type !== PieceType.PAWN) {
       throw new Error('No pawn at the specified position to promote');
+    }
+
+    if (!this.canBePromoted(piece)) {
+      throw new Error('Pawn cannot be promoted from this position');
     }
 
     this.board[position.rankIndex][position.fileIndex] = null;
