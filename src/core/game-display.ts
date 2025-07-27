@@ -9,10 +9,9 @@ export class GameDisplay {
   showWelcome(): void {
     console.clear();
 
-    console.log('🏁 Welcome to Console Chess! 🏁');
+    this.showTitle('Welcome to Console Chess!');
 
-    console.log(chalk.yellow('\nWelcome to Console Chess!'));
-    console.log(chalk.white('\nHow to play:'));
+    console.log(chalk.white('How to play:'));
     console.log(
       chalk.gray(
         '• Enter moves in format: from to (e.g., "e2,e4" or "1,4 3,4")',
@@ -20,10 +19,8 @@ export class GameDisplay {
     );
     console.log(chalk.gray('• Algebraic format: a1-h8 (e.g., "e2 e4")'));
     console.log(chalk.gray('• Numeric format: row,col (e.g., "1,4 3,4")'));
-    console.log(chalk.gray('• Type "quit" or "exit" to end the game'));
+    console.log(chalk.gray('• Type "quit" to end the game'));
     console.log(chalk.gray('• Type "help" for commands'));
-
-    console.log(chalk.green('\nGame starting...'));
   }
 
   showBoard(board: Board): void {
@@ -83,7 +80,7 @@ export class GameDisplay {
   showGameEnd(gameStatus: GameStatus): void {
     console.clear();
 
-    console.log(chalk.cyan('\n=== GAME OVER ==='));
+    this.showTitle('Game Over');
 
     switch (gameStatus) {
       case GameStatus.WHITE_WINS:
@@ -97,19 +94,13 @@ export class GameDisplay {
         break;
     }
 
-    // TODO: Show game statistics: final board state, move history, and captured pieces
-
-    console.log(chalk.green('\nThank you for playing!'));
+    console.log(chalk.green('\nThank you for playing!\n'));
   }
 
   showHelp(): void {
-    const title = chalk.yellow.bold('╔══════════════════════╗');
-    const titleText = chalk.yellow.bold('║   CHESS GAME HELP    ║');
-    const titleBottom = chalk.yellow.bold('╚══════════════════════╝');
+    console.clear();
 
-    console.log(`\n${title}`);
-    console.log(titleText);
-    console.log(titleBottom);
+    this.showTitle('Chess Game Help');
 
     console.log(chalk.green.bold('\n📝 Input formats:'));
     console.log(
@@ -155,11 +146,13 @@ export class GameDisplay {
     );
   }
 
-  showGameInfo(currentPlayer: Player, capturedPieces: { white: string[], black: string[] }): void {
+  showGameInfo(
+    currentPlayer: Player,
+    capturedPieces: { white: string[]; black: string[] },
+  ): void {
     console.log(
       chalk.blue(`\nCurrent Player: ${currentPlayer.getDisplayName()}`),
     );
-
 
     if (capturedPieces.white.length > 0 || capturedPieces.black.length > 0) {
       console.log(chalk.magenta('\nCaptured Pieces:'));
@@ -214,16 +207,35 @@ export class GameDisplay {
     );
   }
 
-  showMoveHistory(moveHistory: Move[]): void {
-    console.clear();
+  showTitle(value: string): void {
+    const minWidth = 24;
+    const padding = 4;
+    const borderWidth = 2;
+    const contentWidth = Math.max(
+      value.length + padding,
+      minWidth - borderWidth,
+    );
 
-    const title = chalk.yellow.bold('╔══════════════════════╗');
-    const titleText = chalk.yellow.bold('║    MOVE HISTORY      ║');
-    const titleBottom = chalk.yellow.bold('╚══════════════════════╝');
+    const horizontalBorder = '═'.repeat(contentWidth);
+    const title = chalk.yellow.bold(`╔${horizontalBorder}╗`);
+    const titleBottom = chalk.yellow.bold(`╚${horizontalBorder}╝`);
+
+    const availableSpace = contentWidth - value.length;
+    const leftPadding = Math.floor(availableSpace / 2);
+    const rightPadding = availableSpace - leftPadding;
+    const centeredText =
+      ' '.repeat(leftPadding) + value + ' '.repeat(rightPadding);
+    const titleText = chalk.yellow.bold(`║${centeredText}║`);
 
     console.log(`\n${title}`);
     console.log(titleText);
-    console.log(titleBottom);
+    console.log(`${titleBottom}\n`);
+  }
+
+  showMoveHistory(moveHistory: Move[]): void {
+    console.clear();
+
+    this.showTitle('Move History');
 
     if (moveHistory.length === 0) {
       console.log(chalk.gray('\nNo moves have been made yet.'));
