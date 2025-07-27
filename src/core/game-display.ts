@@ -1,9 +1,10 @@
-import { GameStatus, PieceColor, Move } from '../utils/enums.js';
+import { GameStatus, PieceColor } from '../utils/enums.js';
 import { Position } from './position.js';
 import { Player } from './player.js';
 import { Board } from './board.js';
 import Table from 'cli-table3';
 import chalk from 'chalk';
+import { Move } from './types.js';
 
 export class GameDisplay {
   showWelcome(): void {

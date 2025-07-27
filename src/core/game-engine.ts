@@ -1,11 +1,12 @@
 import chalk from 'chalk';
 import { Board } from './board.js';
-import { GameStatus, PieceColor, PieceType, Move } from '../utils/enums.js';
+import { GameStatus, PieceColor, PieceType } from '../utils/enums.js';
 import readlineSync from 'readline-sync';
 import { GameDisplay } from './game-display.js';
 import { Position } from './position.js';
 import { Piece } from './pieces/piece.js';
 import { Player } from './player.js';
+import { Move } from './types.js';
 
 export class GameEngine {
   private board: Board;
