@@ -35,7 +35,7 @@ export class GameEngine {
   }
 
   private initializePlayers(): void {
-    console.log(chalk.cyan('\n=== Player Setup ==='));
+    this.display.showTitle('Player Setup');
 
     const whiteName = readlineSync
       .question(chalk.white('Enter name for White player: '), {
@@ -88,6 +88,27 @@ export class GameEngine {
       }
     }
     this.display.showGameEnd(this.gameStatus);
+    this.promptRestart();
+  }
+
+  private promptRestart(): void {
+    const confirm = readlineSync.keyInYNStrict(
+      chalk.yellow('Do you want to restart the game?'),
+    );
+
+    if (confirm) {
+      this.restartGame();
+    }
+  }
+
+  private restartGame(): void {
+    this.board = new Board();
+    this.moveHistory = [];
+    this.moveCount = 0;
+    this.currentPlayer = this.whitePlayer;
+    this.gameStatus = GameStatus.PLAYING;
+
+    this.start();
   }
 
   private getPlayerInput(): string {
@@ -109,13 +130,19 @@ export class GameEngine {
 
     const piece = this.board.getPieceAt(from);
 
-    if (piece && !this.isValidTurn(piece)) {
+    if (!piece) {
+      throw new Error(`No piece found at ${from.toAlgebraic()}`);
+    }
+
+    if (!this.isValidTurn(piece)) {
       throw new Error("Invalid turn! It's not your piece.");
     }
 
-    const isPromotion = piece && this.board.isPromotionMove(piece, to);
-
     this.board.movePiece(from, to);
+
+    this.recordMove(from, to);
+
+    const isPromotion = this.board.isPromotionMove(piece, to);
 
     if (isPromotion) {
       const promotionType = this.promptForPromotion();
@@ -127,7 +154,13 @@ export class GameEngine {
       );
     }
 
-    this.recordMove(from, to);
+    const kingCaptured = this.board.getCapturedKing();
+    if (kingCaptured) {
+      this.gameStatus =
+        kingCaptured.color === PieceColor.WHITE
+          ? GameStatus.BLACK_WINS
+          : GameStatus.WHITE_WINS;
+    }
 
     this.display.showSuccessMove(this.currentPlayer, from, to);
   }
@@ -162,11 +195,7 @@ export class GameEngine {
           chalk.yellow('Are you sure you want to quit?'),
         );
 
-        if (confirm) {
-          console.log(chalk.yellow('Exiting the game...'));
-          return false; // Exit game loop
-        }
-        return true;
+        return !confirm; // Return true to continue game loop or false to exit
       }
 
       case 'help':
@@ -176,11 +205,6 @@ export class GameEngine {
 
       case 'history':
         this.display.showMoveHistory(this.moveHistory);
-        this.waitForKeyPress();
-        return true;
-
-      case 'status':
-        // TODO: Implement status display
         this.waitForKeyPress();
         return true;
 
