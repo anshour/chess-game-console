@@ -147,11 +147,7 @@ export class GameEngine {
     if (isPromotion) {
       const promotionType = this.promptForPromotion();
       this.board.promotePawn(to, promotionType);
-      console.log(
-        chalk.green(
-          `\n🎊 ${this.currentPlayer.getDisplayName()}'s pawn has been promoted to ${promotionType}! 🎊`,
-        ),
-      );
+      this.display.showPawnPromoted(this.currentPlayer, promotionType);
     }
 
     const kingCaptured = this.board.getCapturedKing();
@@ -252,7 +248,6 @@ export class GameEngine {
     ];
     const selectedType = promotionTypes[selectedIndex];
 
-    console.log(chalk.green(`\n✨ Promoting pawn to ${selectedType}! ✨`));
     return selectedType;
   }
 

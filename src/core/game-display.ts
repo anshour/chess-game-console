@@ -278,4 +278,12 @@ export class GameDisplay {
     console.log(table.toString());
     console.log(chalk.gray(`\nTotal moves: ${moveHistory.length}`));
   }
+
+  showPawnPromoted(currentPlayer: Player, promotionType: string): void {
+    console.log(
+      chalk.green(
+        `\n🎊 ${currentPlayer.getDisplayName()}'s pawn has been promoted to ${promotionType}! 🎊`,
+      ),
+    );
+  }
 }
