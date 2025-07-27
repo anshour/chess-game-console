@@ -106,15 +106,11 @@ export class Renderer {
     this.showTitle('Welcome to Console Chess!');
 
     console.log(chalk.white('How to play:'));
+    console.log(chalk.gray('• Enter moves in format: from to'));
     console.log(
-      chalk.gray(
-        '• Enter moves in format: from to (e.g., "e2,e4" or "1,4 3,4")',
-      ),
+      chalk.gray('• Algebraic format: a1-h8 (e.g., "e2 e4", "e2,e4")'),
     );
-    console.log(chalk.gray('• Algebraic format: a1-h8 (e.g., "e2 e4")'));
     console.log(chalk.gray('• Numeric format: row,col (e.g., "1,4 3,4")'));
-    console.log(chalk.gray('• Type "quit" to end the game'));
-    console.log(chalk.gray('• Type "help" for commands'));
   }
 
   showGameEnd(gameStatus: GameStatus): void {
@@ -132,55 +128,6 @@ export class Renderer {
     }
 
     console.log(chalk.green('\nThank you for playing!\n'));
-  }
-
-  showHelp(): void {
-    console.clear();
-
-    this.showTitle('Chess Game Help');
-
-    console.log(chalk.green.bold('\n📝 Input formats:'));
-    console.log(
-      chalk.white('  • Algebraic: ') +
-        chalk.cyan.bold('a2 a4') +
-        chalk.white(' or ') +
-        chalk.cyan.bold('a2,a4'),
-    );
-    console.log(
-      chalk.white('  • Numeric: ') +
-        chalk.cyan.bold('0,1 0,3') +
-        chalk.white(' or ') +
-        chalk.cyan.bold('0,1,0,3'),
-    );
-
-    console.log(chalk.green.bold('\n🎮 Commands:'));
-    console.log(
-      chalk.white('  • Type ') +
-        chalk.magenta.bold('"quit"') +
-        chalk.white(' to exit the game'),
-    );
-    console.log(
-      chalk.white('  • Type ') +
-        chalk.magenta.bold('"help"') +
-        chalk.white(' to show this message'),
-    );
-
-    console.log(chalk.green.bold('\n🎯 Legend:'));
-    console.log(
-      chalk.white('  • ') +
-        chalk.white.bold('White pieces') +
-        chalk.white(' = White/Light color'),
-    );
-    console.log(
-      chalk.white('  • ') +
-        chalk.yellow.bold('Black pieces') +
-        chalk.white(' = Yellow color'),
-    );
-    console.log(
-      chalk.white('  • ') +
-        chalk.gray('□ ■') +
-        chalk.white(' = Empty squares\n'),
-    );
   }
 
   showGameInfo(
