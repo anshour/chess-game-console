@@ -10,6 +10,7 @@ import { Position } from './position.js';
 
 export class Board {
   private board: (Piece | null)[][] = [];
+  private capturedKing: Piece | null = null;
   private capturedPieces: { white: Piece[]; black: Piece[] } = {
     white: [],
     black: [],
@@ -93,6 +94,10 @@ export class Board {
       } else {
         this.capturedPieces.black.push(capturedPiece);
       }
+
+      if (capturedPiece.type === PieceType.KING) {
+        this.capturedKing = capturedPiece;
+      }
     }
 
     this.board[from.rankIndex][from.fileIndex] = null;
@@ -102,6 +107,10 @@ export class Board {
     this.board[to.rankIndex][to.fileIndex] = piece;
 
     return true;
+  }
+
+  getCapturedKing(): Piece | null {
+    return this.capturedKing;
   }
 
   isPromotionMove(piece: Piece, to: Position): boolean {
