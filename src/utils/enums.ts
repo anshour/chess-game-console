@@ -17,19 +17,10 @@ export enum MoveStatus {
   INVALID = 'invalid',
   PROMOTION = 'promotion',
   KING_CAPTURED = 'king_captured',
-
-  // TODO: IMPLEMENT
-  // STALEMATE = 'stalemate',
-  // CHECK = 'check',
-  // CHECKMATE = 'checkmate',
 }
 
 export enum GameStatus {
   PLAYING = 'playing',
   WHITE_WINS = 'white_wins',
   BLACK_WINS = 'black_wins',
-
-  // TODO: IMPLEMENT
-  // DRAW = 'draw',
-  // STOP = 'stop',
 }
