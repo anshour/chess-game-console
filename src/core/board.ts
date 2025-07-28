@@ -11,7 +11,7 @@ import { Move } from './types.js';
 
 export class Board {
   private board: (Piece | null)[][] = [];
-  public enPassantTarget: Position | null = null;
+  private enPassantTarget: Position | null = null;
   private capturedKing: Piece | null = null;
   private capturedPieces: { white: Piece[]; black: Piece[] } = {
     white: [],
@@ -163,6 +163,28 @@ export class Board {
     return false;
   }
 
+  private findKing(color: PieceColor): King | null {
+    for (let rank = 0; rank < 8; rank++) {
+      for (let file = 0; file < 8; file++) {
+        const piece = this.getPieceAt(new Position(rank, file));
+        if (piece && piece.type === PieceType.KING && piece.color === color) {
+          return piece as King;
+        }
+      }
+    }
+    return null;
+  }
+
+  public isKingInCheck(color: PieceColor): boolean {
+    const king = this.findKing(color);
+    if (!king) {
+      return false;
+    }
+    const opponentColor =
+      color === PieceColor.WHITE ? PieceColor.BLACK : PieceColor.WHITE;
+    return this.isSquareAttacked(king.position, opponentColor);
+  }
+
   getCapturedKing(): Piece | null {
     return this.capturedKing;
   }
@@ -229,5 +251,9 @@ export class Board {
     fileIndex: number,
   ): boolean {
     return rankIndex >= 0 && rankIndex < 8 && fileIndex >= 0 && fileIndex < 8;
+  }
+
+  getEnPassantTarget(): Position | null {
+    return this.enPassantTarget;
   }
 }
