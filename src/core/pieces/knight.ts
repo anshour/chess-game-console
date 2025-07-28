@@ -8,61 +8,38 @@ export class Knight extends Piece {
     super(color, PieceType.KNIGHT, position);
   }
 
-  getMovementMoves(board: Board): Position[] {
-    const moves: Position[] = [];
-    const knightMoves = [
-      [2, 1],   // up 2, right 1
-      [2, -1],  // up 2, left 1
-      [-2, 1],  // down 2, right 1
-      [-2, -1], // down 2, left 1
-      [1, 2],   // right 2, up 1
-      [1, -2],  // left 2, up 1
-      [-1, 2],  // right 2, down 1
-      [-1, -2]  // left 2, down 1
+  private getBasicMoves(board: Board): Position[] {
+    const offsets = [
+      [2, 1], // up-right
+      [2, -1], // up-left
+      [-2, 1], // down-right
+      [-2, -1], // down-left
+      [1, 2], // right-up
+      [1, -2], // right-down
+      [-1, 2], // left-up
+      [-1, -2], // left-down
     ];
+    const positions: Position[] = [];
 
-    for (const [rankOffset, fileOffset] of knightMoves) {
+    for (const [rankOffset, fileOffset] of offsets) {
       const newRank = this.position.rankIndex + rankOffset;
       const newFile = this.position.fileIndex + fileOffset;
 
       if (board.areCoordinatesWithinBoard(newRank, newFile)) {
-        const newPosition = new Position(newRank, newFile);
-
-        if (this.isEmpty(newPosition, board)) {
-          moves.push(newPosition);
-        }
+        positions.push(new Position(newRank, newFile));
       }
     }
 
-    return moves;
+    return positions.filter((pos) => this.isEmpty(pos, board));
+  }
+
+  getMovementMoves(board: Board): Position[] {
+    return this.getBasicMoves(board).filter((pos) => this.isEmpty(pos, board));
   }
 
   getAttackMoves(board: Board): Position[] {
-    const moves: Position[] = [];
-    const knightMoves = [
-      [2, 1],   // up 2, right 1
-      [2, -1],  // up 2, left 1
-      [-2, 1],  // down 2, right 1
-      [-2, -1], // down 2, left 1
-      [1, 2],   // right 2, up 1
-      [1, -2],  // left 2, up 1
-      [-1, 2],  // right 2, down 1
-      [-1, -2]  // left 2, down 1
-    ];
-
-    for (const [rankOffset, fileOffset] of knightMoves) {
-      const newRank = this.position.rankIndex + rankOffset;
-      const newFile = this.position.fileIndex + fileOffset;
-
-      if (board.areCoordinatesWithinBoard(newRank, newFile)) {
-        const newPosition = new Position(newRank, newFile);
-
-        if (this.isEnemyPiece(newPosition, board)) {
-          moves.push(newPosition);
-        }
-      }
-    }
-
-    return moves;
+    return this.getBasicMoves(board).filter((pos) =>
+      this.isEnemyPiece(pos, board),
+    );
   }
 }

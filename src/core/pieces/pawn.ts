@@ -56,7 +56,10 @@ export class Pawn extends Piece {
           moves.push(pos);
         }
 
-        if (board.enPassantTarget && pos.equals(board.enPassantTarget)) {
+        if (
+          board.getEnPassantTarget() &&
+          pos.equals(board.getEnPassantTarget())
+        ) {
           moves.push(pos);
         }
       }

@@ -8,69 +8,39 @@ export class Bishop extends Piece {
     super(color, PieceType.BISHOP, position);
   }
 
-  getMovementMoves(board: Board): Position[] {
+  private getBasicMoves(board: Board): Position[] {
     const moves: Position[] = [];
     const directions = [
-      [1, 1],   // up-right
-      [1, -1],  // up-left
-      [-1, 1],  // down-right
-      [-1, -1]  // down-left
+      [1, 1],
+      [1, -1],
+      [-1, 1],
+      [-1, -1],
     ];
 
     for (const [rankDir, fileDir] of directions) {
-      let currentRank = this.position.rankIndex + rankDir;
-      let currentFile = this.position.fileIndex + fileDir;
+      let rank = this.position.rankIndex + rankDir;
+      let file = this.position.fileIndex + fileDir;
 
-      while (board.areCoordinatesWithinBoard(currentRank, currentFile)) {
-        const currentPosition = new Position(currentRank, currentFile);
+      while (board.areCoordinatesWithinBoard(rank, file)) {
+        const pos = new Position(rank, file);
 
-        if (this.isEmpty(currentPosition, board)) {
-          moves.push(currentPosition);
-        } else {
-          // Stop if there is any piece
-          break;
-        }
+        moves.push(pos);
 
-        currentRank += rankDir;
-        currentFile += fileDir;
+        rank += rankDir;
+        file += fileDir;
       }
     }
 
     return moves;
   }
 
+  getMovementMoves(board: Board): Position[] {
+    return this.getBasicMoves(board).filter((pos) => this.isEmpty(pos, board));
+  }
+
   getAttackMoves(board: Board): Position[] {
-    const moves: Position[] = [];
-    const directions = [
-      [1, 1],   // up-right
-      [1, -1],  // up-left
-      [-1, 1],  // down-right
-      [-1, -1]  // down-left
-    ];
-
-    for (const [rankDir, fileDir] of directions) {
-      let currentRank = this.position.rankIndex + rankDir;
-      let currentFile = this.position.fileIndex + fileDir;
-
-      while (board.areCoordinatesWithinBoard(currentRank, currentFile)) {
-        const currentPosition = new Position(currentRank, currentFile);
-
-        if (this.isEmpty(currentPosition, board)) {
-          // Continue moving through empty squares
-        } else if (this.isEnemyPiece(currentPosition, board)) {
-          // Can attack enemy piece
-          moves.push(currentPosition);
-          break;
-        } else {
-          // Hit friendly piece, stop
-          break;
-        }
-
-        currentRank += rankDir;
-        currentFile += fileDir;
-      }
-    }
-
-    return moves;
+    return this.getBasicMoves(board).filter((pos) =>
+      this.isEnemyPiece(pos, board),
+    );
   }
 }
