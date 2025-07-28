@@ -8,18 +8,69 @@ export class Bishop extends Piece {
     super(color, PieceType.BISHOP, position);
   }
 
-  isValidMove(to: Position, board: Board): boolean {
-    const rankDiff = Math.abs(to.rankIndex - this.position.rankIndex);
-    const fileDiff = Math.abs(to.fileIndex - this.position.fileIndex);
+  getMovementMoves(board: Board): Position[] {
+    const moves: Position[] = [];
+    const directions = [
+      [1, 1],   // up-right
+      [1, -1],  // up-left
+      [-1, 1],  // down-right
+      [-1, -1]  // down-left
+    ];
 
-    if (rankDiff !== fileDiff) {
-      return false;
+    for (const [rankDir, fileDir] of directions) {
+      let currentRank = this.position.rankIndex + rankDir;
+      let currentFile = this.position.fileIndex + fileDir;
+
+      while (board.areCoordinatesWithinBoard(currentRank, currentFile)) {
+        const currentPosition = new Position(currentRank, currentFile);
+
+        if (this.isEmpty(currentPosition, board)) {
+          moves.push(currentPosition);
+        } else {
+          // Stop if there is any piece
+          break;
+        }
+
+        currentRank += rankDir;
+        currentFile += fileDir;
+      }
     }
 
-    if (!this.isPathClear(this.position, to, board)) {
-      return false;
+    return moves;
+  }
+
+  getAttackMoves(board: Board): Position[] {
+    const moves: Position[] = [];
+    const directions = [
+      [1, 1],   // up-right
+      [1, -1],  // up-left
+      [-1, 1],  // down-right
+      [-1, -1]  // down-left
+    ];
+
+    for (const [rankDir, fileDir] of directions) {
+      let currentRank = this.position.rankIndex + rankDir;
+      let currentFile = this.position.fileIndex + fileDir;
+
+      while (board.areCoordinatesWithinBoard(currentRank, currentFile)) {
+        const currentPosition = new Position(currentRank, currentFile);
+
+        if (this.isEmpty(currentPosition, board)) {
+          // Continue moving through empty squares
+        } else if (this.isEnemyPiece(currentPosition, board)) {
+          // Can attack enemy piece
+          moves.push(currentPosition);
+          break;
+        } else {
+          // Hit friendly piece, stop
+          break;
+        }
+
+        currentRank += rankDir;
+        currentFile += fileDir;
+      }
     }
 
-    return this.isEmpty(to, board) || this.isEnemyPiece(to, board);
+    return moves;
   }
 }

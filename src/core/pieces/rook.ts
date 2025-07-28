@@ -8,18 +8,69 @@ export class Rook extends Piece {
     super(color, PieceType.ROOK, position);
   }
 
-  isValidMove(to: Position, board: Board): boolean {
-    if (
-      this.position.rankIndex !== to.rankIndex &&
-      this.position.fileIndex !== to.fileIndex
-    ) {
-      return false;
+  getMovementMoves(board: Board): Position[] {
+    const moves: Position[] = [];
+    const directions = [
+      [0, 1],  // right
+      [0, -1], // left
+      [1, 0],  // up
+      [-1, 0]  // down
+    ];
+
+    for (const [rankDir, fileDir] of directions) {
+      let currentRank = this.position.rankIndex + rankDir;
+      let currentFile = this.position.fileIndex + fileDir;
+
+      while (board.areCoordinatesWithinBoard(currentRank, currentFile)) {
+        const currentPosition = new Position(currentRank, currentFile);
+
+        if (this.isEmpty(currentPosition, board)) {
+          moves.push(currentPosition);
+        } else {
+          // Stop if we hit any piece (friend or enemy)
+          break;
+        }
+
+        currentRank += rankDir;
+        currentFile += fileDir;
+      }
     }
 
-    if (!this.isPathClear(this.position, to, board)) {
-      return false;
+    return moves;
+  }
+
+  getAttackMoves(board: Board): Position[] {
+    const moves: Position[] = [];
+    const directions = [
+      [0, 1],  // right
+      [0, -1], // left
+      [1, 0],  // up
+      [-1, 0]  // down
+    ];
+
+    for (const [rankDir, fileDir] of directions) {
+      let currentRank = this.position.rankIndex + rankDir;
+      let currentFile = this.position.fileIndex + fileDir;
+
+      while (board.areCoordinatesWithinBoard(currentRank, currentFile)) {
+        const currentPosition = new Position(currentRank, currentFile);
+
+        if (this.isEmpty(currentPosition, board)) {
+          // Continue moving through empty squares
+        } else if (this.isEnemyPiece(currentPosition, board)) {
+          // Can attack enemy piece
+          moves.push(currentPosition);
+          break;
+        } else {
+          // Hit friendly piece, stop
+          break;
+        }
+
+        currentRank += rankDir;
+        currentFile += fileDir;
+      }
     }
 
-    return this.isEmpty(to, board) || this.isEnemyPiece(to, board);
+    return moves;
   }
 }

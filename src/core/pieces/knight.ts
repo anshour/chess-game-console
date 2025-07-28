@@ -8,17 +8,61 @@ export class Knight extends Piece {
     super(color, PieceType.KNIGHT, position);
   }
 
-  isValidMove(to: Position, board: Board): boolean {
-    const rankDiff = Math.abs(to.rankIndex - this.position.rankIndex);
-    const fileDiff = Math.abs(to.fileIndex - this.position.fileIndex);
+  getMovementMoves(board: Board): Position[] {
+    const moves: Position[] = [];
+    const knightMoves = [
+      [2, 1],   // up 2, right 1
+      [2, -1],  // up 2, left 1
+      [-2, 1],  // down 2, right 1
+      [-2, -1], // down 2, left 1
+      [1, 2],   // right 2, up 1
+      [1, -2],  // left 2, up 1
+      [-1, 2],  // right 2, down 1
+      [-1, -2]  // left 2, down 1
+    ];
 
-    const isLShape =
-      (rankDiff === 2 && fileDiff === 1) || (rankDiff === 1 && fileDiff === 2);
+    for (const [rankOffset, fileOffset] of knightMoves) {
+      const newRank = this.position.rankIndex + rankOffset;
+      const newFile = this.position.fileIndex + fileOffset;
 
-    if (!isLShape) {
-      return false;
+      if (board.areCoordinatesWithinBoard(newRank, newFile)) {
+        const newPosition = new Position(newRank, newFile);
+
+        if (this.isEmpty(newPosition, board)) {
+          moves.push(newPosition);
+        }
+      }
     }
 
-    return this.isEmpty(to, board) || this.isEnemyPiece(to, board);
+    return moves;
+  }
+
+  getAttackMoves(board: Board): Position[] {
+    const moves: Position[] = [];
+    const knightMoves = [
+      [2, 1],   // up 2, right 1
+      [2, -1],  // up 2, left 1
+      [-2, 1],  // down 2, right 1
+      [-2, -1], // down 2, left 1
+      [1, 2],   // right 2, up 1
+      [1, -2],  // left 2, up 1
+      [-1, 2],  // right 2, down 1
+      [-1, -2]  // left 2, down 1
+    ];
+
+    for (const [rankOffset, fileOffset] of knightMoves) {
+      const newRank = this.position.rankIndex + rankOffset;
+      const newFile = this.position.fileIndex + fileOffset;
+
+      if (board.areCoordinatesWithinBoard(newRank, newFile)) {
+        const newPosition = new Position(newRank, newFile);
+
+        if (this.isEnemyPiece(newPosition, board)) {
+          moves.push(newPosition);
+        }
+      }
+    }
+
+    return moves;
   }
 }

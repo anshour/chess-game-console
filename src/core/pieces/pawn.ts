@@ -8,38 +8,59 @@ export class Pawn extends Piece {
     super(color, PieceType.PAWN, position);
   }
 
-  isValidMove(to: Position, board: Board): boolean {
+  getMovementMoves(board: Board): Position[] {
+    const moves: Position[] = [];
     const direction = this.color === PieceColor.WHITE ? 1 : -1;
-    const startRank = this.color === PieceColor.WHITE ? 1 : 6;
+    const currentRank = this.position.rankIndex;
+    const currentFile = this.position.fileIndex;
 
-    const rankDiff = to.rankIndex - this.position.rankIndex;
-    const fileDiff = Math.abs(to.fileIndex - this.position.fileIndex);
-
-    if (fileDiff === 0 && rankDiff === direction) {
-      return this.isEmpty(to, board);
+    const oneStepRank = currentRank + direction;
+    if (!board.areCoordinatesWithinBoard(oneStepRank, currentFile)) {
+      return moves;
     }
 
-    if (
-      fileDiff === 0 &&
-      rankDiff === 2 * direction &&
-      this.position.rankIndex === startRank
-    ) {
-      return (
-        this.isEmpty(to, board) &&
-        this.isEmpty(
-          new Position(
-            this.position.rankIndex + direction,
-            this.position.fileIndex,
-          ),
-          board,
-        )
-      );
-    }
+    const oneStepForward = new Position(oneStepRank, currentFile);
+    if (this.isEmpty(oneStepForward, board)) {
+      moves.push(oneStepForward);
 
-    if (fileDiff === 1 && rankDiff === direction) {
-      return this.isEnemyPiece(to, board);
-    }
+      if (!this.hasMoved) {
+        const twoStepRank = currentRank + 2 * direction;
+        if (!board.areCoordinatesWithinBoard(twoStepRank, currentFile)) {
+          return moves;
+        }
+        const twoStepsForward = new Position(twoStepRank, currentFile);
 
-    return false;
+        if (this.isEmpty(twoStepsForward, board)) {
+          moves.push(twoStepsForward);
+        }
+      }
+    }
+    return moves;
+  }
+
+  getAttackMoves(board: Board): Position[] {
+    const moves: Position[] = [];
+    const direction = this.color === PieceColor.WHITE ? 1 : -1;
+    const attackRank = this.position.rankIndex + direction;
+
+    const attackFiles = [
+      this.position.fileIndex - 1,
+      this.position.fileIndex + 1,
+    ];
+
+    for (const attackFile of attackFiles) {
+      if (board.areCoordinatesWithinBoard(attackRank, attackFile)) {
+        const pos = new Position(attackRank, attackFile);
+
+        if (this.isEnemyPiece(pos, board)) {
+          moves.push(pos);
+        }
+
+        if (board.enPassantTarget && pos.equals(board.enPassantTarget)) {
+          moves.push(pos);
+        }
+      }
+    }
+    return moves;
   }
 }

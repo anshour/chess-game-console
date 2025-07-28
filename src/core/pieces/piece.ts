@@ -3,13 +3,28 @@ import { Board } from '../board.js';
 import { Position } from '../position.js';
 
 export abstract class Piece {
+  public hasMoved: boolean = false;
+
   constructor(
     public readonly color: PieceColor,
     public readonly type: PieceType,
     public position: Position,
   ) {}
 
-  abstract isValidMove(to: Position, board: Board): boolean;
+  abstract getMovementMoves(board: Board): Position[];
+
+  abstract getAttackMoves(board: Board): Position[];
+
+  public isValidMove(to: Position, board: Board): boolean {
+    const legalMoves = this.getAnyLegalMoves(board);
+    return legalMoves.some((move) => move.equals(to));
+  }
+
+  public getAnyLegalMoves(board: Board): Position[] {
+    const movementMoves = this.getMovementMoves(board);
+    const attackMoves = this.getAttackMoves(board);
+    return [...movementMoves, ...attackMoves];
+  }
 
   protected isPathClear(from: Position, to: Position, board: Board): boolean {
     const rankDiff = to.rankIndex - from.rankIndex;

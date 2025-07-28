@@ -8,18 +8,61 @@ export class King extends Piece {
     super(color, PieceType.KING, position);
   }
 
-  isValidMove(to: Position, board: Board): boolean {
-    const rankDiff = Math.abs(to.rankIndex - this.position.rankIndex);
-    const fileDiff = Math.abs(to.fileIndex - this.position.fileIndex);
+  getMovementMoves(board: Board): Position[] {
+    const moves: Position[] = [];
+    const directions = [
+      [1, 0],   // up
+      [-1, 0],  // down
+      [0, 1],   // right
+      [0, -1],  // left
+      [1, 1],   // up-right
+      [1, -1],  // up-left
+      [-1, 1],  // down-right
+      [-1, -1]  // down-left
+    ];
 
-    if (rankDiff > 1 || fileDiff > 1) {
-      return false;
+    for (const [rankDir, fileDir] of directions) {
+      const newRank = this.position.rankIndex + rankDir;
+      const newFile = this.position.fileIndex + fileDir;
+
+      if (board.areCoordinatesWithinBoard(newRank, newFile)) {
+        const newPosition = new Position(newRank, newFile);
+
+        if (this.isEmpty(newPosition, board)) {
+          moves.push(newPosition);
+        }
+      }
     }
 
-    if (rankDiff === 0 && fileDiff === 0) {
-      return false;
+    return moves;
+  }
+
+  getAttackMoves(board: Board): Position[] {
+    const moves: Position[] = [];
+    const directions = [
+      [1, 0],   // up
+      [-1, 0],  // down
+      [0, 1],   // right
+      [0, -1],  // left
+      [1, 1],   // up-right
+      [1, -1],  // up-left
+      [-1, 1],  // down-right
+      [-1, -1]  // down-left
+    ];
+
+    for (const [rankDir, fileDir] of directions) {
+      const newRank = this.position.rankIndex + rankDir;
+      const newFile = this.position.fileIndex + fileDir;
+
+      if (board.areCoordinatesWithinBoard(newRank, newFile)) {
+        const newPosition = new Position(newRank, newFile);
+
+        if (this.isEnemyPiece(newPosition, board)) {
+          moves.push(newPosition);
+        }
+      }
     }
 
-    return this.isEmpty(to, board) || this.isEnemyPiece(to, board);
+    return moves;
   }
 }
