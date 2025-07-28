@@ -23,8 +23,11 @@ export class Bishop extends Piece {
 
       while (board.areCoordinatesWithinBoard(rank, file)) {
         const pos = new Position(rank, file);
-
         moves.push(pos);
+
+        if (!this.isEmpty(pos, board)) {
+          break;
+        }
 
         rank += rankDir;
         file += fileDir;

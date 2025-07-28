@@ -30,7 +30,7 @@ export class Knight extends Piece {
       }
     }
 
-    return positions.filter((pos) => this.isEmpty(pos, board));
+    return positions;
   }
 
   getMovementMoves(board: Board): Position[] {
