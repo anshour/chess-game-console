@@ -11,6 +11,7 @@ import { Move } from './types.js';
 
 export class Board {
   private board: (Piece | null)[][] = [];
+  public enPassantTarget: Position | null = null;
   private capturedKing: Piece | null = null;
   private capturedPieces: { white: Piece[]; black: Piece[] } = {
     white: [],
@@ -22,8 +23,6 @@ export class Board {
   }
 
   private initializeBoard(): void {
-    console.log('Initializing chess board...');
-
     // Initialize empty board
     for (let rank = 0; rank < 8; rank++) {
       this.board[rank] = [];
@@ -90,8 +89,36 @@ export class Board {
       );
     }
 
-    const piece = this.getPieceAt(from);
-    const capturedPiece = this.getPieceAt(to);
+    const piece = this.getPieceAt(from)!;
+    let capturedPiece = this.getPieceAt(to);
+
+    if (
+      piece.type === PieceType.PAWN &&
+      this.enPassantTarget &&
+      to.equals(this.enPassantTarget) &&
+      !capturedPiece
+    ) {
+      const capturedPawnRank = from.rankIndex;
+      const capturedPawnFile = to.fileIndex;
+      const capturedPawnPosition = new Position(
+        capturedPawnRank,
+        capturedPawnFile,
+      );
+      capturedPiece = this.getPieceAt(capturedPawnPosition);
+      this.board[capturedPawnPosition.rankIndex][
+        capturedPawnPosition.fileIndex
+      ] = null;
+    }
+
+    this.enPassantTarget = null;
+
+    if (
+      piece.type === PieceType.PAWN &&
+      Math.abs(from.rankIndex - to.rankIndex) === 2
+    ) {
+      const enPassantRank = (from.rankIndex + to.rankIndex) / 2;
+      this.enPassantTarget = new Position(enPassantRank, from.fileIndex);
+    }
 
     if (capturedPiece) {
       if (capturedPiece.color === PieceColor.WHITE) {
@@ -106,19 +133,40 @@ export class Board {
     }
 
     this.board[from.rankIndex][from.fileIndex] = null;
-
     piece.position = to;
-
     this.board[to.rankIndex][to.fileIndex] = piece;
 
+    if (!piece.hasMoved) {
+      piece.hasMoved = true;
+    }
+
     return true;
+  }
+
+  public isSquareAttacked(
+    position: Position,
+    attackerColor: PieceColor,
+  ): boolean {
+    for (let rank = 0; rank < 8; rank++) {
+      for (let file = 0; file < 8; file++) {
+        const attackerPosition = new Position(rank, file);
+        const attacker = this.getPieceAt(attackerPosition);
+
+        if (attacker && attacker.color === attackerColor) {
+          const moves = attacker.getAttackMoves(this);
+          if (moves.some((p) => p.equals(position))) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
   }
 
   getCapturedKing(): Piece | null {
     return this.capturedKing;
   }
 
-  // TODO: MOVE TO PAWN
   canBePromoted(piece: Piece): boolean {
     if (piece.type !== PieceType.PAWN) {
       return false;
@@ -174,5 +222,12 @@ export class Board {
       white: this.capturedPieces.white.map((piece) => piece.type),
       black: this.capturedPieces.black.map((piece) => piece.type),
     };
+  }
+
+  public areCoordinatesWithinBoard(
+    rankIndex: number,
+    fileIndex: number,
+  ): boolean {
+    return rankIndex >= 0 && rankIndex < 8 && fileIndex >= 0 && fileIndex < 8;
   }
 }
