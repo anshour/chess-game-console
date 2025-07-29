@@ -226,7 +226,7 @@ describe('Pawn', () => {
     });
   });
 
-  describe('getAnyValidMoves', () => {
+  describe('getLegalMoves', () => {
     it('should combine movement and attack moves', () => {
       const { board: emptyBoard, piece: pawn } = createEmptyBoardWithPiece(
         Pawn,
@@ -237,7 +237,7 @@ describe('Pawn', () => {
       const enemyPawn = new Pawn(PieceColor.BLACK, new Position(2, 1));
       placePieceAt(emptyBoard, enemyPawn, new Position(2, 1));
 
-      const allMoves = pawn.getAnyValidMoves(emptyBoard);
+      const allMoves = pawn.getLegalMoves(emptyBoard);
       const expectedMoves = [
         new Position(2, 0),
         new Position(3, 0),
@@ -251,8 +251,8 @@ describe('Pawn', () => {
   describe('isValidMove', () => {
     it('should return true for valid movement', () => {
       const pawn = board.getPieceAt(new Position(1, 0)) as Pawn;
-      expect(pawn.isValidMove(new Position(2, 0), board)).toBe(true);
-      expect(pawn.isValidMove(new Position(3, 0), board)).toBe(true);
+      expect(pawn.isLegalMove(new Position(2, 0), board)).toBe(true);
+      expect(pawn.isLegalMove(new Position(3, 0), board)).toBe(true);
     });
 
     it('should return true for valid attack', () => {
@@ -265,7 +265,7 @@ describe('Pawn', () => {
       const enemyPawn = new Pawn(PieceColor.BLACK, new Position(2, 1));
       placePieceAt(emptyBoard, enemyPawn, new Position(2, 1));
 
-      expect(pawn.isValidMove(new Position(2, 1), emptyBoard)).toBe(true);
+      expect(pawn.isLegalMove(new Position(2, 1), emptyBoard)).toBe(true);
     });
 
     it('should return false for invalid move', () => {
@@ -275,9 +275,9 @@ describe('Pawn', () => {
         new Position(1, 0),
       );
 
-      expect(pawn.isValidMove(new Position(4, 0), emptyBoard)).toBe(false);
-      expect(pawn.isValidMove(new Position(2, 1), emptyBoard)).toBe(false);
-      expect(pawn.isValidMove(new Position(1, 1), emptyBoard)).toBe(false);
+      expect(pawn.isLegalMove(new Position(4, 0), emptyBoard)).toBe(false);
+      expect(pawn.isLegalMove(new Position(2, 1), emptyBoard)).toBe(false);
+      expect(pawn.isLegalMove(new Position(1, 1), emptyBoard)).toBe(false);
     });
   });
 });

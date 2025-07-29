@@ -70,22 +70,22 @@ export class Board {
     return this.board[position.rankIndex][position.fileIndex];
   }
 
-  isValidMove(move: Move): boolean {
+  isLegalMove(move: Move): boolean {
     const { from, to } = move;
 
     const piece = this.getPieceAt(from);
     if (!piece) {
       return false;
     }
-    return piece.isValidMove(to, this);
+    return piece.isLegalMove(to, this);
   }
 
   movePiece(move: Move): boolean {
     const { from, to } = move;
 
-    if (!this.isValidMove(move)) {
+    if (!this.isLegalMove(move)) {
       throw new Error(
-        'Invalid move! Please check the piece and target position.',
+        'Illegal move! Please check the piece and target position.',
       );
     }
 

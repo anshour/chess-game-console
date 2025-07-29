@@ -178,7 +178,7 @@ describe('Rook', () => {
     });
   });
 
-  describe('getAnyValidMoves', () => {
+  describe('getLegalMoves', () => {
     it('should combine movement and attack moves', () => {
       const rookPosition = new Position(4, 4);
       const { board: emptyBoard, piece: rook } = createEmptyBoardWithPiece(
@@ -190,7 +190,7 @@ describe('Rook', () => {
       const enemyPawn = new Pawn(PieceColor.BLACK, new Position(4, 6));
       placePieceAt(emptyBoard, enemyPawn, new Position(4, 6));
 
-      const allMoves = rook.getAnyValidMoves(emptyBoard);
+      const allMoves = rook.getLegalMoves(emptyBoard);
       const expectedMoves = [
         new Position(4, 5),
         new Position(4, 6),
@@ -210,16 +210,16 @@ describe('Rook', () => {
         removePieceAt(board, new Position(0, file));
       }
 
-      expect(rook.isValidMove(new Position(0, 1), board)).toBe(true);
-      expect(rook.isValidMove(new Position(0, 7), board)).toBe(true);
+      expect(rook.isLegalMove(new Position(0, 1), board)).toBe(true);
+      expect(rook.isLegalMove(new Position(0, 7), board)).toBe(true);
     });
 
     it('should return true for valid vertical movement', () => {
       const rook = board.getPieceAt(new Position(0, 0)) as Rook;
       removePieceAt(board, new Position(1, 0));
 
-      expect(rook.isValidMove(new Position(1, 0), board)).toBe(true);
-      expect(rook.isValidMove(new Position(2, 0), board)).toBe(true);
+      expect(rook.isLegalMove(new Position(1, 0), board)).toBe(true);
+      expect(rook.isLegalMove(new Position(2, 0), board)).toBe(true);
     });
 
     it('should return true for valid attack move', () => {
@@ -229,31 +229,31 @@ describe('Rook', () => {
       const enemyPawn = new Pawn(PieceColor.BLACK, new Position(0, 2));
       placePieceAt(board, enemyPawn, new Position(0, 2));
 
-      expect(rook.isValidMove(new Position(0, 2), board)).toBe(true);
+      expect(rook.isLegalMove(new Position(0, 2), board)).toBe(true);
     });
 
     it('should return false for invalid diagonal move', () => {
       const rook = board.getPieceAt(new Position(0, 0)) as Rook;
       removePieceAt(board, new Position(1, 1));
 
-      expect(rook.isValidMove(new Position(1, 1), board)).toBe(false);
+      expect(rook.isLegalMove(new Position(1, 1), board)).toBe(false);
     });
 
     it('should return false for invalid knight-like move', () => {
       const rook = board.getPieceAt(new Position(0, 0)) as Rook;
-      expect(rook.isValidMove(new Position(2, 1), board)).toBe(false);
+      expect(rook.isLegalMove(new Position(2, 1), board)).toBe(false);
     });
 
     it('should return false for blocked path', () => {
       const rook = board.getPieceAt(new Position(0, 0)) as Rook;
 
-      expect(rook.isValidMove(new Position(2, 0), board)).toBe(false);
+      expect(rook.isLegalMove(new Position(2, 0), board)).toBe(false);
     });
 
     it('should return false for move to square with friendly piece', () => {
       const rook = board.getPieceAt(new Position(0, 0)) as Rook;
 
-      expect(rook.isValidMove(new Position(0, 1), board)).toBe(false);
+      expect(rook.isLegalMove(new Position(0, 1), board)).toBe(false);
     });
   });
 

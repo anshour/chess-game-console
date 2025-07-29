@@ -205,7 +205,7 @@ describe('King', () => {
     });
   });
 
-  describe('getAnyValidMoves', () => {
+  describe('getLegalMoves', () => {
     it('should combine movement and attack moves', () => {
       const { board: emptyBoard, piece: king } = createEmptyBoardWithPiece(
         King,
@@ -216,7 +216,7 @@ describe('King', () => {
       const enemyPawn = new Pawn(PieceColor.BLACK, new Position(5, 4));
       placePieceAt(emptyBoard, enemyPawn, new Position(5, 4));
 
-      const allMoves = king.getAnyValidMoves(emptyBoard);
+      const allMoves = king.getLegalMoves(emptyBoard);
 
       const expectedMoves = [
         new Position(3, 4),
@@ -238,9 +238,9 @@ describe('King', () => {
       removePieceAt(board, new Position(0, 5));
       removePieceAt(board, new Position(1, 4));
 
-      expect(king.isValidMove(new Position(0, 3), board)).toBe(true);
-      expect(king.isValidMove(new Position(0, 5), board)).toBe(true);
-      expect(king.isValidMove(new Position(1, 4), board)).toBe(true);
+      expect(king.isLegalMove(new Position(0, 3), board)).toBe(true);
+      expect(king.isLegalMove(new Position(0, 5), board)).toBe(true);
+      expect(king.isLegalMove(new Position(1, 4), board)).toBe(true);
     });
 
     it('should return true for valid attack move', () => {
@@ -253,7 +253,7 @@ describe('King', () => {
       const enemyPawn = new Pawn(PieceColor.BLACK, new Position(5, 4));
       placePieceAt(emptyBoard, enemyPawn, new Position(5, 4));
 
-      expect(king.isValidMove(new Position(5, 4), emptyBoard)).toBe(true);
+      expect(king.isLegalMove(new Position(5, 4), emptyBoard)).toBe(true);
     });
 
     it('should return false for invalid multi-square moves', () => {
@@ -262,8 +262,8 @@ describe('King', () => {
       removePieceAt(board, new Position(1, 4));
       removePieceAt(board, new Position(2, 4));
 
-      expect(king.isValidMove(new Position(2, 4), board)).toBe(false);
-      expect(king.isValidMove(new Position(0, 6), board)).toBe(false);
+      expect(king.isLegalMove(new Position(2, 4), board)).toBe(false);
+      expect(king.isLegalMove(new Position(0, 6), board)).toBe(false);
     });
 
     it('should return false for invalid diagonal long moves', () => {
@@ -272,20 +272,20 @@ describe('King', () => {
       removePieceAt(board, new Position(1, 3));
       removePieceAt(board, new Position(2, 2));
 
-      expect(king.isValidMove(new Position(2, 2), board)).toBe(false);
+      expect(king.isLegalMove(new Position(2, 2), board)).toBe(false);
     });
 
     it('should return false for knight-like moves', () => {
       const king = board.getPieceAt(new Position(0, 4)) as King;
-      expect(king.isValidMove(new Position(2, 3), board)).toBe(false);
-      expect(king.isValidMove(new Position(1, 2), board)).toBe(false);
+      expect(king.isLegalMove(new Position(2, 3), board)).toBe(false);
+      expect(king.isLegalMove(new Position(1, 2), board)).toBe(false);
     });
 
     it('should return false for moves to squares with friendly pieces', () => {
       const king = board.getPieceAt(new Position(0, 4)) as King;
 
-      expect(king.isValidMove(new Position(0, 3), board)).toBe(false);
-      expect(king.isValidMove(new Position(1, 4), board)).toBe(false);
+      expect(king.isLegalMove(new Position(0, 3), board)).toBe(false);
+      expect(king.isLegalMove(new Position(1, 4), board)).toBe(false);
     });
 
     it('should return true for castling moves when conditions are met', () => {
@@ -294,8 +294,8 @@ describe('King', () => {
       clearHorizontalPath(board, 0, 1, 3);
       clearHorizontalPath(board, 0, 5, 6);
 
-      const kingsideCastle = king.isValidMove(new Position(0, 6), board);
-      const queensideCastle = king.isValidMove(new Position(0, 2), board);
+      const kingsideCastle = king.isLegalMove(new Position(0, 6), board);
+      const queensideCastle = king.isLegalMove(new Position(0, 2), board);
 
       expect(typeof kingsideCastle).toBe('boolean');
       expect(typeof queensideCastle).toBe('boolean');

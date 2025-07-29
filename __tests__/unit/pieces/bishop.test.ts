@@ -52,12 +52,9 @@ describe('Bishop', () => {
 
       const moves = bishop.getMovementMoves(emptyBoard);
 
-
       expect(moves).toHaveLength(13);
 
-
       const expectedMoves = [
-
         new Position(5, 5),
         new Position(6, 6),
         new Position(7, 7),
@@ -86,16 +83,12 @@ describe('Bishop', () => {
         new Position(4, 4),
       );
 
-
       const friendlyPawn = new Pawn(PieceColor.WHITE, new Position(6, 6));
       placePieceAt(emptyBoard, friendlyPawn, new Position(6, 6));
 
       const moves = bishop.getMovementMoves(emptyBoard);
 
-      const forbiddenMoves = [
-        new Position(6, 6),
-        new Position(7, 7),
-      ];
+      const forbiddenMoves = [new Position(6, 6), new Position(7, 7)];
 
       expect(hasNoForbiddenMoves(moves, forbiddenMoves)).toBe(true);
       expect(moveExists(moves, new Position(5, 5))).toBe(true);
@@ -197,7 +190,7 @@ describe('Bishop', () => {
     });
   });
 
-  describe('getAnyValidMoves', () => {
+  describe('getLegalMoves', () => {
     it('should combine movement and attack moves', () => {
       const { board: emptyBoard, piece: bishop } = createEmptyBoardWithPiece(
         Bishop,
@@ -208,7 +201,7 @@ describe('Bishop', () => {
       const enemyPawn = new Pawn(PieceColor.BLACK, new Position(6, 6));
       placePieceAt(emptyBoard, enemyPawn, new Position(6, 6));
 
-      const allMoves = bishop.getAnyValidMoves(emptyBoard);
+      const allMoves = bishop.getLegalMoves(emptyBoard);
 
       const expectedMoves = [
         new Position(5, 5),
@@ -225,63 +218,58 @@ describe('Bishop', () => {
     it('should return true for valid diagonal movement', () => {
       const bishop = board.getPieceAt(new Position(0, 2)) as Bishop;
 
-
       removePieceAt(board, new Position(1, 1));
       removePieceAt(board, new Position(1, 3));
 
-      expect(bishop.isValidMove(new Position(1, 1), board)).toBe(true);
-      expect(bishop.isValidMove(new Position(1, 3), board)).toBe(true);
+      expect(bishop.isLegalMove(new Position(1, 1), board)).toBe(true);
+      expect(bishop.isLegalMove(new Position(1, 3), board)).toBe(true);
     });
 
     it('should return true for valid attack move', () => {
       const bishop = board.getPieceAt(new Position(0, 2)) as Bishop;
 
-
       removePieceAt(board, new Position(1, 1));
       const enemyPawn = new Pawn(PieceColor.BLACK, new Position(2, 0));
       placePieceAt(board, enemyPawn, new Position(2, 0));
 
-      expect(bishop.isValidMove(new Position(2, 0), board)).toBe(true);
+      expect(bishop.isLegalMove(new Position(2, 0), board)).toBe(true);
     });
 
     it('should return false for invalid horizontal move', () => {
       const bishop = board.getPieceAt(new Position(0, 2)) as Bishop;
       removePieceAt(board, new Position(0, 1));
 
-      expect(bishop.isValidMove(new Position(0, 1), board)).toBe(false);
+      expect(bishop.isLegalMove(new Position(0, 1), board)).toBe(false);
     });
 
     it('should return false for invalid vertical move', () => {
       const bishop = board.getPieceAt(new Position(0, 2)) as Bishop;
       removePieceAt(board, new Position(1, 2));
 
-      expect(bishop.isValidMove(new Position(1, 2), board)).toBe(false);
+      expect(bishop.isLegalMove(new Position(1, 2), board)).toBe(false);
     });
 
     it('should return false for invalid knight-like move', () => {
       const bishop = board.getPieceAt(new Position(0, 2)) as Bishop;
-      expect(bishop.isValidMove(new Position(2, 1), board)).toBe(false);
+      expect(bishop.isLegalMove(new Position(2, 1), board)).toBe(false);
     });
 
     it('should return false for blocked path', () => {
       const bishop = board.getPieceAt(new Position(0, 2)) as Bishop;
 
-
-      expect(bishop.isValidMove(new Position(2, 0), board)).toBe(false);
-      expect(bishop.isValidMove(new Position(2, 4), board)).toBe(false);
+      expect(bishop.isLegalMove(new Position(2, 0), board)).toBe(false);
+      expect(bishop.isLegalMove(new Position(2, 4), board)).toBe(false);
     });
 
     it('should return false for move to square with friendly piece', () => {
       const bishop = board.getPieceAt(new Position(0, 2)) as Bishop;
 
-
       removePieceAt(board, new Position(1, 1));
-      expect(bishop.isValidMove(new Position(1, 1), board)).toBe(true);
-
+      expect(bishop.isLegalMove(new Position(1, 1), board)).toBe(true);
 
       const friendlyPawn = new Pawn(PieceColor.WHITE, new Position(2, 0));
       placePieceAt(board, friendlyPawn, new Position(2, 0));
-      expect(bishop.isValidMove(new Position(2, 0), board)).toBe(false);
+      expect(bishop.isLegalMove(new Position(2, 0), board)).toBe(false);
     });
   });
 
@@ -295,7 +283,6 @@ describe('Bishop', () => {
 
       const moves = bishop.getMovementMoves(emptyBoard);
 
-
       expect(moves.length).toBeGreaterThan(0);
       expect(
         moves.every((move) => move.rankIndex >= 0 && move.rankIndex <= 7),
@@ -303,7 +290,6 @@ describe('Bishop', () => {
       expect(
         moves.every((move) => move.fileIndex >= 0 && move.fileIndex <= 7),
       ).toBe(true);
-
 
       for (const move of moves) {
         expect(Math.abs(move.rankIndex - 0)).toBe(Math.abs(move.fileIndex - 0));
@@ -318,7 +304,6 @@ describe('Bishop', () => {
       );
 
       const moves = bishop.getMovementMoves(emptyBoard);
-
 
       expect(moves).toHaveLength(7);
       const expectedMoves = [
@@ -341,7 +326,6 @@ describe('Bishop', () => {
         new Position(4, 4),
       );
 
-
       const surroundingPieces = [
         new Position(3, 3),
         new Position(3, 5),
@@ -356,7 +340,6 @@ describe('Bishop', () => {
 
       const moves = bishop.getMovementMoves(emptyBoard);
 
-
       expect(moves).toHaveLength(0);
     });
 
@@ -369,14 +352,12 @@ describe('Bishop', () => {
 
       const moves = bishop.getMovementMoves(emptyBoard);
 
-
       for (const move of moves) {
         const rankDiff = Math.abs(move.rankIndex - 4);
         const fileDiff = Math.abs(move.fileIndex - 4);
         expect(rankDiff).toBe(fileDiff);
         expect(rankDiff).toBeGreaterThan(0);
       }
-
 
       expect(
         moves.some((move) => move.rankIndex === 4 && move.fileIndex !== 4),

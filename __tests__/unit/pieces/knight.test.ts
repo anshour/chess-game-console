@@ -184,7 +184,7 @@ describe('Knight', () => {
     });
   });
 
-  describe('getAnyValidMoves', () => {
+  describe('getLegalMoves', () => {
     it('should combine movement and attack moves', () => {
       const { board: emptyBoard, piece: knight } = createEmptyBoardWithPiece(
         Knight,
@@ -195,7 +195,7 @@ describe('Knight', () => {
       const enemyPawn = new Pawn(PieceColor.BLACK, new Position(6, 5));
       placePieceAt(emptyBoard, enemyPawn, new Position(6, 5));
 
-      const allMoves = knight.getAnyValidMoves(emptyBoard);
+      const allMoves = knight.getLegalMoves(emptyBoard);
 
       const expectedMoves = [
         new Position(6, 3),
@@ -212,8 +212,8 @@ describe('Knight', () => {
     it('should return true for valid L-shaped movement', () => {
       const knight = board.getPieceAt(new Position(0, 1)) as Knight;
 
-      expect(knight.isValidMove(new Position(2, 0), board)).toBe(true);
-      expect(knight.isValidMove(new Position(2, 2), board)).toBe(true);
+      expect(knight.isLegalMove(new Position(2, 0), board)).toBe(true);
+      expect(knight.isLegalMove(new Position(2, 2), board)).toBe(true);
     });
 
     it('should return true for valid attack move', () => {
@@ -226,16 +226,16 @@ describe('Knight', () => {
       const enemyPawn = new Pawn(PieceColor.BLACK, new Position(6, 5));
       placePieceAt(emptyBoard, enemyPawn, new Position(6, 5));
 
-      expect(knight.isValidMove(new Position(6, 5), emptyBoard)).toBe(true);
+      expect(knight.isLegalMove(new Position(6, 5), emptyBoard)).toBe(true);
     });
 
     it('should return false for invalid non-L-shaped moves', () => {
       const knight = board.getPieceAt(new Position(0, 1)) as Knight;
 
-      expect(knight.isValidMove(new Position(1, 1), board)).toBe(false);
-      expect(knight.isValidMove(new Position(0, 2), board)).toBe(false);
-      expect(knight.isValidMove(new Position(1, 1), board)).toBe(false);
-      expect(knight.isValidMove(new Position(3, 1), board)).toBe(false);
+      expect(knight.isLegalMove(new Position(1, 1), board)).toBe(false);
+      expect(knight.isLegalMove(new Position(0, 2), board)).toBe(false);
+      expect(knight.isLegalMove(new Position(1, 1), board)).toBe(false);
+      expect(knight.isLegalMove(new Position(3, 1), board)).toBe(false);
     });
 
     it('should return false for moves to squares with friendly pieces', () => {
@@ -244,7 +244,7 @@ describe('Knight', () => {
       const friendlyPawn = new Pawn(PieceColor.WHITE, new Position(2, 0));
       placePieceAt(board, friendlyPawn, new Position(2, 0));
 
-      expect(knight.isValidMove(new Position(2, 0), board)).toBe(false);
+      expect(knight.isLegalMove(new Position(2, 0), board)).toBe(false);
     });
 
     it('should return false for moves outside board boundaries', () => {
@@ -254,7 +254,7 @@ describe('Knight', () => {
         new Position(0, 0),
       );
 
-      const moves = knight.getAnyValidMoves(emptyBoard);
+      const moves = knight.getLegalMoves(emptyBoard);
 
       expect(
         moves.every((move) => move.rankIndex >= 0 && move.rankIndex <= 7),

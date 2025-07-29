@@ -248,7 +248,7 @@ describe('Queen', () => {
     });
   });
 
-  describe('getAnyValidMoves', () => {
+  describe('getLegalMoves', () => {
     it('should combine movement and attack moves', () => {
       const position = new Position(4, 4);
       const { board: emptyBoard, piece: queen } = createEmptyBoardWithPiece(
@@ -263,7 +263,7 @@ describe('Queen', () => {
         placePieceAt(emptyBoard, new Pawn(PieceColor.BLACK, pos), pos);
       });
 
-      const allMoves = queen.getAnyValidMoves(emptyBoard);
+      const allMoves = queen.getLegalMoves(emptyBoard);
 
       const expectedMoves = [
         new Position(4, 5),
@@ -292,7 +292,7 @@ describe('Queen', () => {
       ];
 
       testPositions.forEach((pos) => {
-        expect(queen.isValidMove(pos, board)).toBe(true);
+        expect(queen.isLegalMove(pos, board)).toBe(true);
       });
     });
 
@@ -304,7 +304,7 @@ describe('Queen', () => {
       const testPositions = [new Position(1, 3), new Position(2, 3)];
 
       testPositions.forEach((pos) => {
-        expect(queen.isValidMove(pos, board)).toBe(true);
+        expect(queen.isLegalMove(pos, board)).toBe(true);
       });
     });
 
@@ -316,7 +316,7 @@ describe('Queen', () => {
       pathsToClear.forEach((pos) => removePieceAt(board, pos));
 
       pathsToClear.forEach((pos) => {
-        expect(queen.isValidMove(pos, board)).toBe(true);
+        expect(queen.isLegalMove(pos, board)).toBe(true);
       });
     });
 
@@ -330,7 +330,7 @@ describe('Queen', () => {
         new Position(2, 3),
       );
 
-      expect(queen.isValidMove(new Position(2, 3), board)).toBe(true);
+      expect(queen.isLegalMove(new Position(2, 3), board)).toBe(true);
     });
 
     it('should return false for invalid knight-like move', () => {
@@ -339,7 +339,7 @@ describe('Queen', () => {
       const invalidMoves = [new Position(2, 2), new Position(1, 1)];
 
       invalidMoves.forEach((pos) => {
-        expect(queen.isValidMove(pos, board)).toBe(false);
+        expect(queen.isLegalMove(pos, board)).toBe(false);
       });
     });
 
@@ -349,7 +349,7 @@ describe('Queen', () => {
       const blockedMoves = [new Position(2, 3), new Position(2, 2)];
 
       blockedMoves.forEach((pos) => {
-        expect(queen.isValidMove(pos, board)).toBe(false);
+        expect(queen.isLegalMove(pos, board)).toBe(false);
       });
     });
 
@@ -359,7 +359,7 @@ describe('Queen', () => {
       const friendlySquares = [new Position(0, 2), new Position(1, 3)];
 
       friendlySquares.forEach((pos) => {
-        expect(queen.isValidMove(pos, board)).toBe(false);
+        expect(queen.isLegalMove(pos, board)).toBe(false);
       });
     });
   });

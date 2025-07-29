@@ -89,25 +89,25 @@ describe('Board', () => {
     it('should return true for valid pawn move', () => {
       const from = new Position(1, 0);
       const to = new Position(2, 0);
-      expect(board.isValidMove({ from, to })).toBe(true);
+      expect(board.isLegalMove({ from, to })).toBe(true);
     });
 
     it('should return true for valid two-step pawn move', () => {
       const from = new Position(1, 0);
       const to = new Position(3, 0);
-      expect(board.isValidMove({ from, to })).toBe(true);
+      expect(board.isLegalMove({ from, to })).toBe(true);
     });
 
     it('should return false for invalid move', () => {
       const from = new Position(1, 0);
       const to = new Position(4, 0);
-      expect(board.isValidMove({ from, to })).toBe(false);
+      expect(board.isLegalMove({ from, to })).toBe(false);
     });
 
     it('should return false when no piece at from position', () => {
       const from = new Position(3, 3);
       const to = new Position(4, 3);
-      expect(board.isValidMove({ from, to })).toBe(false);
+      expect(board.isLegalMove({ from, to })).toBe(false);
     });
   });
 
@@ -133,7 +133,7 @@ describe('Board', () => {
       const to = new Position(4, 0);
 
       expect(() => board.movePiece({ from, to })).toThrow(
-        'Invalid move! Please check the piece and target position.',
+        'Illegal move! Please check the piece and target position.',
       );
     });
 

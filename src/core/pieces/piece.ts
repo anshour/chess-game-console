@@ -15,14 +15,14 @@ export abstract class Piece {
 
   abstract getAttackMoves(board: Board): Position[];
 
-  public getAnyValidMoves(board: Board): Position[] {
+  public getLegalMoves(board: Board): Position[] {
     const movementMoves = this.getMovementMoves(board);
     const attackMoves = this.getAttackMoves(board);
     return [...movementMoves, ...attackMoves];
   }
 
-  public isValidMove(to: Position, board: Board): boolean {
-    const legalMoves = this.getAnyValidMoves(board);
+  public isLegalMove(to: Position, board: Board): boolean {
+    const legalMoves = this.getLegalMoves(board);
     return legalMoves.some((move) => move.equals(to));
   }
 
