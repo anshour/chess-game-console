@@ -3,7 +3,7 @@ import { Position } from '../core/position';
 import { Player } from '../core/player';
 import { Board } from '../core/board';
 import { Move } from '../core/types';
-import * as Table from 'cli-table3';
+import Table from 'cli-table3';
 import chalk from 'chalk';
 
 export class Renderer {
