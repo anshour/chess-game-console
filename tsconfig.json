@@ -8,7 +8,6 @@
     "rootDir": ".",
     "outDir": "build",
     "allowSyntheticDefaultImports": true,
-    "importHelpers": true,
     "alwaysStrict": true,
     "sourceMap": true,
     "forceConsistentCasingInFileNames": true,
