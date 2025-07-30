@@ -48,7 +48,7 @@ export default tseslint.config(
     },
 
     rules: {
-      ...vitest.configs.recommended.rules,
+      ...(vitest.configs?.recommended?.rules || {}),
     },
 
     settings: {
@@ -58,8 +58,17 @@ export default tseslint.config(
     },
 
     languageOptions: {
+      parser: tseslint.parser,
+      ecmaVersion: 2020,
+      sourceType: 'module',
+
       globals: {
-        ...vitest.environments.env.globals,
+        ...globals.node,
+        ...(vitest.environments?.env?.globals || {}),
+      },
+
+      parserOptions: {
+        project: './tsconfig.test.json',
       },
     },
   },
