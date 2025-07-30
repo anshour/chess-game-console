@@ -1,6 +1,6 @@
-import { PieceColor, PieceType } from '../../utils/enums.js';
-import { Board } from '../board.js';
-import { Position } from '../position.js';
+import { PieceColor, PieceType } from '../../utils/enums';
+import { Board } from '../board';
+import { Position } from '../position';
 
 export abstract class Piece {
   public hasMoved: boolean = false;

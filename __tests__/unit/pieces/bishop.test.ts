@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Bishop } from '../../../src/core/pieces/bishop.js';
-import { Board } from '../../../src/core/board.js';
-import { Position } from '../../../src/core/position.js';
-import { PieceColor, PieceType } from '../../../src/utils/enums.js';
-import { Pawn } from '../../../src/core/pieces/pawn.js';
+import { Bishop } from '../../../src/core/pieces/bishop';
+import { Board } from '../../../src/core/board';
+import { Position } from '../../../src/core/position';
+import { PieceColor, PieceType } from '../../../src/utils/enums';
+import { Pawn } from '../../../src/core/pieces/pawn';
 import {
   createEmptyBoardWithPiece,
   placePieceAt,
@@ -11,7 +11,7 @@ import {
   moveExists,
   hasAllExpectedMoves,
   hasNoForbiddenMoves,
-} from '../../test-helpers.js';
+} from '../../test-helpers';
 
 describe('Bishop', () => {
   let board: Board;

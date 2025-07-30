@@ -1,8 +1,8 @@
-import { Game } from '../core/game.js';
-import { Move } from '../core/types.js';
-import { MoveStatus, PieceColor } from '../utils/enums.js';
-import { InputHandler } from './input-handler.js';
-import { Renderer } from './renderer.js';
+import { Game } from '../core/game';
+import { Move } from '../core/types';
+import { MoveStatus, PieceColor } from '../utils/enums';
+import { InputHandler } from './input-handler';
+import { Renderer } from './renderer';
 
 export class CliController {
   constructor(

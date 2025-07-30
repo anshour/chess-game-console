@@ -1,14 +1,9 @@
-import {
-  GameStatus,
-  MoveStatus,
-  PieceColor,
-  PieceType,
-} from '../utils/enums.js';
-import { Board } from './board.js';
-import { Piece } from './pieces/piece.js';
-import { Player } from './player.js';
-import { Position } from './position.js';
-import { Move } from './types.js';
+import { GameStatus, MoveStatus, PieceColor, PieceType } from '../utils/enums';
+import { Board } from './board';
+import { Piece } from './pieces/piece';
+import { Player } from './player';
+import { Position } from './position';
+import { Move } from './types';
 
 export class Game {
   private board: Board;

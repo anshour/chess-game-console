@@ -1,9 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Queen } from '../../../src/core/pieces/queen.js';
-import { Board } from '../../../src/core/board.js';
-import { Position } from '../../../src/core/position.js';
-import { PieceColor, PieceType } from '../../../src/utils/enums.js';
-import { Pawn } from '../../../src/core/pieces/pawn.js';
+import { Queen } from '../../../src/core/pieces/queen';
+import { Board } from '../../../src/core/board';
+import { Position } from '../../../src/core/position';
+import { PieceColor, PieceType } from '../../../src/utils/enums';
+import { Pawn } from '../../../src/core/pieces/pawn';
 import {
   createEmptyBoardWithPiece,
   placePieceAt,
@@ -14,7 +14,7 @@ import {
   hasNoForbiddenMoves,
   generateHorizontalPositions,
   generateVerticalPositions,
-} from '../../test-helpers.js';
+} from '../../test-helpers';
 
 describe('Queen', () => {
   let board: Board;

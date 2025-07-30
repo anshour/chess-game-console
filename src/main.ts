@@ -1,4 +1,4 @@
-import { CliController } from './cli/cli-controller.js';
+import { CliController } from './cli/cli-controller';
 import chalk from 'chalk';
 
 function main(): void {

@@ -1,4 +1,4 @@
-import { PieceColor } from '../utils/enums.js';
+import { PieceColor } from '../utils/enums';
 
 export class Player {
   public readonly color: PieceColor;

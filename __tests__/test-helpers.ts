@@ -1,7 +1,7 @@
-import { Board } from '../src/core/board.js';
-import { Piece } from '../src/core/pieces/piece.js';
-import { Position } from '../src/core/position.js';
-import { PieceColor } from '../src/utils/enums.js';
+import { Board } from '../src/core/board';
+import { Piece } from '../src/core/pieces/piece';
+import { Position } from '../src/core/position';
+import { PieceColor } from '../src/utils/enums';
 
 export function createEmptyBoard(): Board {
   const emptyBoard = new Board();

@@ -1,9 +1,9 @@
-import { GameStatus, PieceColor } from '../utils/enums.js';
-import { Position } from '../core/position.js';
-import { Player } from '../core/player.js';
-import { Board } from '../core/board.js';
-import { Move } from '../core/types.js';
-import CliTable3 from 'cli-table3';
+import { GameStatus, PieceColor } from '../utils/enums';
+import { Position } from '../core/position';
+import { Player } from '../core/player';
+import { Board } from '../core/board';
+import { Move } from '../core/types';
+import * as Table from 'cli-table3';
 import chalk from 'chalk';
 
 export class Renderer {
@@ -12,7 +12,7 @@ export class Renderer {
   }
 
   showBoard(board: Board): void {
-    const table = new CliTable3({
+    const table = new Table({
       head: ['', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', ''],
       style: {
         head: ['cyan'],
@@ -198,7 +198,7 @@ export class Renderer {
     console.log(chalk.green.bold('\n📝 Game Moves:\n'));
 
     // Create a table for move history
-    const table = new CliTable3({
+    const table = new Table({
       head: ['Move', 'White', 'Black'],
       style: {
         head: ['cyan'],

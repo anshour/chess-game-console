@@ -1,15 +1,15 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Pawn } from '../../../src/core/pieces/pawn.js';
-import { Board } from '../../../src/core/board.js';
-import { Position } from '../../../src/core/position.js';
-import { PieceColor, PieceType } from '../../../src/utils/enums.js';
+import { Pawn } from '../../../src/core/pieces/pawn';
+import { Board } from '../../../src/core/board';
+import { Position } from '../../../src/core/position';
+import { PieceColor, PieceType } from '../../../src/utils/enums';
 import {
   createEmptyBoardWithPiece,
   placePieceAt,
   moveExists,
   hasAllExpectedMoves,
   hasNoForbiddenMoves,
-} from '../../test-helpers.js';
+} from '../../test-helpers';
 
 describe('Pawn', () => {
   let board: Board;

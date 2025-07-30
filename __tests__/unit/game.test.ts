@@ -1,13 +1,13 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { Game } from '../../src/core/game.js';
-import { Position } from '../../src/core/position.js';
+import { Game } from '../../src/core/game';
+import { Position } from '../../src/core/position';
 import {
   GameStatus,
   MoveStatus,
   PieceColor,
   PieceType,
-} from '../../src/utils/enums.js';
-import { Move } from '../../src/core/types.js';
+} from '../../src/utils/enums';
+import { Move } from '../../src/core/types';
 
 describe('Game', () => {
   let game: Game;

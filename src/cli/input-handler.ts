@@ -1,9 +1,9 @@
 import chalk from 'chalk';
-import readlineSync from 'readline-sync';
-import { Player } from '../core/player.js';
-import { PieceColor, PieceType } from '../utils/enums.js';
-import { Position } from '../core/position.js';
-import { Move } from '../core/types.js';
+import * as readlineSync from 'readline-sync';
+import { Player } from '../core/player';
+import { PieceColor, PieceType } from '../utils/enums';
+import { Position } from '../core/position';
+import { Move } from '../core/types';
 
 export class InputHandler {
   waitForKeyPress(): void {

@@ -1,7 +1,7 @@
-import { PieceColor, PieceType } from '../../utils/enums.js';
-import { Board } from '../board.js';
-import { Position } from '../position.js';
-import { Piece } from './piece.js';
+import { PieceColor, PieceType } from '../../utils/enums';
+import { Board } from '../board';
+import { Position } from '../position';
+import { Piece } from './piece';
 
 export class Pawn extends Piece {
   constructor(color: PieceColor, position: Position) {

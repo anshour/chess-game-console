@@ -1,4 +1,4 @@
-import { Position } from './position.js';
+import { Position } from './position';
 
 export interface Move {
   from: Position;
