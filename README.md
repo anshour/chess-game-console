@@ -31,22 +31,10 @@ A console-based chess game implemented in TypeScript with full chess rules, inpu
    ```bash
    npm run build
    ```
-
-   or
-   
-   For watch mode (development):
+4. Start the game
    ```bash
-   npm run build:watch
+   npm start
    ```
-
-## Usage
-
-### Starting the Game
-
-Run the game with:
-```bash
-npm start
-```
 
 ### How to Play
 
