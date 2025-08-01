@@ -58,6 +58,16 @@ export class Game {
 
     this.switchPlayer();
 
+    const isCheckmate = this.board.isCheckmate(this.currentPlayer.color);
+    if (isCheckmate) {
+      this.status =
+        this.currentPlayer.color === PieceColor.WHITE
+          ? GameStatus.BLACK_WINS
+          : GameStatus.WHITE_WINS;
+
+      return MoveStatus.CHECKMATE;
+    }
+
     return MoveStatus.SUCCESS;
   }
 

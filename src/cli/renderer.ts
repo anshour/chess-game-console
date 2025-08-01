@@ -114,8 +114,6 @@ export class Renderer {
   }
 
   showGameEnd(gameStatus: GameStatus): void {
-    console.clear();
-
     this.showTitle('Game Over');
 
     switch (gameStatus) {

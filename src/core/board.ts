@@ -185,6 +185,50 @@ export class Board {
     return this.isSquareAttacked(king.position, opponentColor);
   }
 
+  public isCheckmate(color: PieceColor): boolean {
+    if (!this.isKingInCheck(color)) {
+      return false;
+    }
+
+    for (let rank = 0; rank < 8; rank++) {
+      for (let file = 0; file < 8; file++) {
+        const fromPosition = new Position(rank, file);
+        const piece = this.getPieceAt(fromPosition);
+
+        if (!piece || piece.color !== color) {
+          continue;
+        }
+
+        const legalMoves = piece.getLegalMoves(this);
+
+        for (const toPosition of legalMoves) {
+          // Save the piece that might be captured
+          const capturedPiece = this.getPieceAt(toPosition);
+
+          // Temporarily make move
+          this.board[fromPosition.rankIndex][fromPosition.fileIndex] = null;
+          piece.position = toPosition;
+          this.board[toPosition.rankIndex][toPosition.fileIndex] = piece;
+
+          const stillInCheck = this.isKingInCheck(color);
+
+          // Restore the board completely
+          this.board[toPosition.rankIndex][toPosition.fileIndex] =
+            capturedPiece;
+          piece.position = fromPosition;
+          this.board[fromPosition.rankIndex][fromPosition.fileIndex] = piece;
+
+          if (!stillInCheck) {
+            return false;
+          }
+        }
+      }
+    }
+
+    // No legal moves found that get the king out of check - it's checkmate
+    return true;
+  }
+
   getCapturedKing(): Piece | null {
     return this.capturedKing;
   }

@@ -127,6 +127,21 @@ describe('Game', () => {
       expect(game.isGameOver()).toBe(true);
     });
 
+    it('should return CHECKMATE status and set game status when opponent is checkmate', () => {
+      game.makeMove({ from: new Position(1, 5), to: new Position(2, 5) });
+      game.makeMove({ from: new Position(6, 4), to: new Position(4, 4) });
+      game.makeMove({ from: new Position(1, 6), to: new Position(3, 6) });
+
+      const result = game.makeMove({
+        from: new Position(7, 3),
+        to: new Position(3, 7),
+      });
+
+      expect(result).toBe(MoveStatus.CHECKMATE);
+      expect(game.getStatus()).toBe(GameStatus.BLACK_WINS);
+      expect(game.isGameOver()).toBe(true);
+    });
+
     it('should set correct winner when king is captured', () => {
       game.makeMove({ from: new Position(1, 4), to: new Position(2, 4) });
       game.makeMove({ from: new Position(7, 1), to: new Position(5, 2) });

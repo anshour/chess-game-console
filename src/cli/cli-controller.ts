@@ -59,6 +59,7 @@ export class CliController {
       [MoveStatus.SUCCESS]: (): void => this.handleSuccessfulMove(move),
       [MoveStatus.PROMOTION]: (): void => this.handlePromotion(move),
       [MoveStatus.KING_CAPTURED]: (): void => this.handleGameEnd(),
+      [MoveStatus.CHECKMATE]: (): void => this.handleGameEnd(),
     };
 
     const handler = moveHandlers[status];
@@ -80,6 +81,7 @@ export class CliController {
   }
 
   private handleGameEnd(): void {
+    this.renderer.showBoard(this.game.getBoard());
     this.renderer.showGameEnd(this.game.getStatus());
   }
 

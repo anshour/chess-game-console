@@ -17,6 +17,7 @@ export enum MoveStatus {
   INVALID = 'invalid',
   PROMOTION = 'promotion',
   KING_CAPTURED = 'king_captured',
+  CHECKMATE = 'checkmate',
 }
 
 export enum GameStatus {
